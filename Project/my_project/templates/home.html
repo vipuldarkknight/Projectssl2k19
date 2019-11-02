@@ -9,7 +9,9 @@
   <p align='center'><a href="{% url 'logout' %}">logout</a></p>
   <p><a href="{% url 'password_reset' %}">reset password</a></p>
 {% else %}
-  <p align='center'>You are not logged in</p>
-  <div align="center"><a href="{% url 'login' %}">Login</a></div>
+  <p align='center'>Already a User? Login in Here</p>
+  <div align="center"><a href="{% url 'login' %}">LogIn</a></div>
+  <p align='center'>New User? Register Here</p>
+  <div align="center"><a href="{% url 'signup' %}">SignUp</a></div>
 {% endif %}
 {% endblock %}
