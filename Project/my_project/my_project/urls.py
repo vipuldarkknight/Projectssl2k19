@@ -22,8 +22,8 @@ from django.views.generic.base import TemplateView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('sign_upusers.urls')),
+    url(r'^password/$', views.change_password, name='change_password'),
     url(r'^accounts/edit/$', views.edit_profile, name='edit'),
-    # url(r'^accounts/changepassword/$', views.change_password, name='password_chng'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 ]
