@@ -28,7 +28,7 @@ def add_qb(request):
     })
 
 def detail_qb(request, name):
-    qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)
+    qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     return render(request, 'detail_qb.html', {
         'qb_detail_list': qb_detail_list,
         'qb_name': name
@@ -51,7 +51,7 @@ def upload_qbfile(request, name):
     else:
         form = QuestionBankForm2()
 
-    return render(request, 'add_qb.html', {
+    return render(request, 'add_qbfile.html', {
         'form': form
     })
 
