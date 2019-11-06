@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail{% endblock %}
+
+{% block content %}
+  <h2>Details</h2>
+
+ <p>
+     <button><a href="{% url 'upload_qbfile' %}">Add File</a></button>
+ </p>
+
+    {% for qb in qb_list %}
+        <p>{{ qb.file }}
+<!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
+            {{ qb.username }}
+        </p>
+    {% endfor %}
+
+
+{% endblock %}

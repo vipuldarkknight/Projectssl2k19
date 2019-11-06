@@ -9,6 +9,18 @@
   <p align='center'><a href="{% url 'logout' %}">Logout</a></p>
   <p align='center'><a href="{% url 'change_password' %}">Change Password</a></p>
   <p align='center'><a href="{% url 'edit' %}">Edit Profile</a></p>
+
+    <p>
+     <button><a href="{% url 'add_qb' %}">Add Question Bank</a></button>
+    </p>
+
+    {% for qb in qb_list %}
+        <p> {{ qb.name }}
+<!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
+            {{ qb.username }}
+        </p>
+    {% endfor %}
+
 {% else %}
   <p align='center'>Already a User? Login in Here</p>
   <div align="center"><a href="{% url 'login' %}">LogIn</a></div>
