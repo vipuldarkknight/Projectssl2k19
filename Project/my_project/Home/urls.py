@@ -4,12 +4,13 @@ from django.conf.urls.static import static
 
 from . import views
 
+app_name = 'Home'
 
 urlpatterns = [
     path('', views.qbList, name='qbList'),
     path('add_qb/', views.add_qb, name='add_qb'),
-    path('detail_qb/(?P<name>[.])', views.detail_qb, name='detail_qb'),
-    path('upload_qbfile/', views.upload_qbfile, name='upload_qbfile'),
+    path('detail_qb/<name>/', views.detail_qb, name='detail_qb'),
+    path('upload_qbfile/<name>/', views.upload_qbfile, name='upload_qbfile'),
 
 ]
 
