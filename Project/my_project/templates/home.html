@@ -7,7 +7,8 @@
 {% if user.is_authenticated %}
   Hi {{ user.username }}!
   <p align='center'><a href="{% url 'logout' %}">logout</a></p>
-  <p><a href="{% url 'password_reset' %}">reset password</a></p>
+  <p><a href="{% url 'password_chng' %}">Change Password</a></p>
+  <p><a href="{% url 'edit' %}">Edit Profile</a></p>
 {% else %}
   <p align='center'>Already a User? Login in Here</p>
   <div align="center"><a href="{% url 'login' %}">LogIn</a></div>

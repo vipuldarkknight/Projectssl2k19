@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+  <h2>Edit Profile</h2>
+ <div class="container">
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <!-- <form action="/team_name_url/" method="post"> -->
+    <button type="submit">Edit</button>
+    <!-- <label for="team_name">Enter name: </label> -->
+    <!-- <input id="team_name" type="text" name="name_field" value="Default name for team."> -->
+    <!-- <input type="submit" value="OK"> -->
+  </form>
+{% endblock %}
