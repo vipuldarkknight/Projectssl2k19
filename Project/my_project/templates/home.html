@@ -9,29 +9,27 @@
  <h1 align='center'> Welcome {{ user.username }} </h1>
   <div align="center">
      <h3 align="center"> Maintain your list of questions here </h3>
-     <button class="button button2"><a  href="{% url 'add_qb' %}">Add Question Bank</a></button>
+     <button class="button button2"><a  href="{% url 'Home:add_qb' %}">Add Question Bank</a></button>
     </div>
     <br>
     <div style="margin-left: 10px; margin-right: 10px; padding: 10px 20px 20px 10px;  background-color: lightgreen">
-    {% for qb in qb_list %}
-        <div > {{ qb.name }}
- <h1 align='center'> Hi {{ user.username }}! </h1>
-  <p align='center'><a href="{% url 'logout' %}">Logout</a></p>
+    
+ <!-- <h1 align='center'> Hi {{ user.username }}! </h1> -->
+  <!-- <p align='center'><a href="{% url 'logout' %}">Logout</a></p>
   <p align='center'><a href="{% url 'change_password' %}">Change Password</a></p>
-  <p align='center'><a href="{% url 'edit' %}">Edit Profile</a></p>
+  <p align='center'><a href="{% url 'edit' %}">Edit Profile</a></p> -->
 
-    <p>
+   <!--  <p>
      <button><a href="{% url 'Home:add_qb' %}">Add Question Bank</a></button>
-    </p>
+    </p> -->
 
     {% for qb in qb_list %}
         <p> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a>
-<!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
-            {{ qb.username }}
-        </div>
+          {{ qb.username }}
     {% endfor %}
   </div>
   <br><br><br>
+  
   <div style="background-color: #D6AB55">
     <br>
     <div align="center"><span><a class= "four" href="{% url 'logout' %}">Logout</a></span></div>
