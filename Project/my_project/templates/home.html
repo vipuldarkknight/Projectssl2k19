@@ -17,7 +17,7 @@
     {% for qb in qb_list %}
         <p> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a>
 <!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
-            {{ qb.username }}
+<!--            {{ qb.username }}-->
         </p>
     {% endfor %}
 
