@@ -7,7 +7,7 @@ from .forms import QuestionBankForm, QuestionBankForm2
 
 # Create your views here.
 def qbList(request):
-    qb_list = Question_Banks_Main.objects.filter(username=request.user.username)
+    qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {
         'qb_list': qb_list
     })
@@ -28,7 +28,7 @@ def add_qb(request):
     })
 
 def detail_qb(request, name):
-    qb_detail_list = Question_Banks_Main.objects.filter(name=name)
+    qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)
     return render(request, 'detail_qb.html', {
         'qb_detail_list': qb_detail_list,
         'qb_name': name

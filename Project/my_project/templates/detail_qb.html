@@ -10,9 +10,9 @@
  </p>
 
     {% for qb in qb_detail_list %}
-        <p> {{ qb_name }}
-<!--            <a href="{{ qb.file }}" target="_blank">Download File</a>-->
-            {{ qb.file }}
+        <p>
+            <a href=media/ {{ qb.file }}" target="_blank">{{ qb.file }}</a>
+<!--            {{ qb.file }}-->
         </p>
     {% endfor %}
 
