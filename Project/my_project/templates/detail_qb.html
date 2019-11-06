@@ -6,13 +6,13 @@
   <h2>Details</h2>
 
  <p>
-     <button><a href="{% url 'upload_qbfile' %}">Add File</a></button>
+     <button><a href="{% url 'Home:upload_qbfile' name=qb_name %}">Add File</a></button>
  </p>
 
-    {% for qb in qb_list %}
-        <p>{{ qb.file }}
-<!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
-            {{ qb.username }}
+    {% for qb in qb_detail_list %}
+        <p> {{ qb_name }}
+<!--            <a href="{{ qb.file }}" target="_blank">Download File</a>-->
+            {{ qb.file }}
         </p>
     {% endfor %}
 

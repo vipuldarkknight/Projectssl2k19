@@ -11,11 +11,11 @@
   <p align='center'><a href="{% url 'edit' %}">Edit Profile</a></p>
 
     <p>
-     <button><a href="{% url 'add_qb' %}">Add Question Bank</a></button>
+     <button><a href="{% url 'Home:add_qb' %}">Add Question Bank</a></button>
     </p>
 
     {% for qb in qb_list %}
-        <p> {{ qb.name }}
+        <p> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a>
 <!--            <a href="{{ qb.qb_file.url }}" target="_blank">Download File</a>-->
             {{ qb.username }}
         </p>
