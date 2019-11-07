@@ -24,8 +24,8 @@
     </p> -->
 
     {% for qb in qb_list %}
-        <p> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a>
-          {{ qb.username }}
+        <p> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a></p>
+          <!-- {{ qb.username }} -->
     {% endfor %}
   </div>
   <br><br><br>
