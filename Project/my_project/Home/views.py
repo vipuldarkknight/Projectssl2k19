@@ -55,4 +55,9 @@ def upload_qbfile(request, name):
         'form': form
     })
 
+
+def delete_qb(request, name):
+    Question_Banks_Main.objects.filter(name=name).delete()
+    return redirect('Home:qbList')
+
     # return HttpResponse(name)

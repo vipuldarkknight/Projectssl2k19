@@ -5,9 +5,13 @@
 {% block content %}
   <h2>Details</h2>
 
- <p>
+ <span>
      <button><a href="{% url 'Home:upload_qbfile' name=qb_name %}">Add File</a></button>
- </p>
+ </span>
+
+ <span>
+     <button><a href="{% url 'Home:delete_qb' name=qb_name %}">Delete this Question Bank</a></button>
+ </span>
 
     {% for qb in qb_detail_list %}
         <p>
