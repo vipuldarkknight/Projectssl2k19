@@ -28,7 +28,7 @@
         <p>
 <!--            <a href= "/media/{{ qb.file }}" target="_blank">{{ qb.file }}</a>-->
 <!--            {{ qb.file }}-->
-            {{ ques.tag }}
+            {{ ques.tag }} <button><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button>
         </p>
     {% endfor %}
 

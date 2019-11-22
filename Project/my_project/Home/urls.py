@@ -13,6 +13,7 @@ urlpatterns = [
     path('upload_qbfile/<name>/', views.upload_qbfile, name='upload_qbfile'),
     path('delete_qb/<name>/', views.delete_qb, name='delete_qb'),
     path('upload_ques_manually/<name>/', views.add_ques_manually, name='add_ques_manually'),
+    path('edit_ques/<id>/', views.edit_ques, name='edit_ques'),
 
 ]
 
