@@ -45,8 +45,10 @@ def add_ques_manually(request, name):
         'form': form
     })
 
-def edit_ques(request, name):
-    ques_instance = Questions_Main(username=request.user.username, qb_name=name)
+def edit_ques(request, id):
+    ques_instance = Questions_Main.objects.get(id=id)
+
+    name = ques_instance.qb_name
 
     if request.method == 'POST':
         form = QuestionForm(request.POST, instance=ques_instance)
