@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
+from configparser import ConfigParser 
 from . models import Question_Banks_Main, Questions_Main
 from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
 
@@ -81,3 +81,14 @@ def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
+def qsplit(request):
+    con=ConfigParser()
+    con.read(request)
+    sl=con.sections()
+    ql=[]
+    for s in sl:
+        dic={}
+        for op in con.options(s):
+            dic[op]=con.get(s,op)
+        ql=ql+[dic]    
+    return ql        
