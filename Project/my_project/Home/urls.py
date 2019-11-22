@@ -12,6 +12,7 @@ urlpatterns = [
     path('detail_qb/<name>/', views.detail_qb, name='detail_qb'),
     path('upload_qbfile/<name>/', views.upload_qbfile, name='upload_qbfile'),
     path('delete_qb/<name>/', views.delete_qb, name='delete_qb'),
+    path('upload_ques_manually/<name>/', views.add_ques_manually, name='add_ques_manually'),
 
 ]
 

@@ -2,8 +2,8 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from . models import Question_Banks_Main
-from .forms import QuestionBankForm, QuestionBankForm2
+from . models import Question_Banks_Main, Questions_Main
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
 
 # Create your views here.
 def qbList(request):
@@ -27,10 +27,31 @@ def add_qb(request):
         'form': form
     })
 
+def add_ques_manually(request, name):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, request.FILES)
+        if form.is_valid():
+            ques = form.save(commit=False)
+            ques.username = request.user.username
+            ques.qb_name = name
+            ques.marks=3
+            ques.save()
+            return redirect('Home:detail_qb', name=name)
+            # return HttpResponse(name)
+
+    else:
+        form = QuestionForm()
+
+    return render(request, 'add_ques_manually.html', {
+        'form': form
+    })
+
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
+    ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
     return render(request, 'detail_qb.html', {
         'qb_detail_list': qb_detail_list,
+        'ques_list': ques_list,
         'qb_name': name
     })
 
@@ -60,4 +81,3 @@ def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
-    # return HttpResponse(name)

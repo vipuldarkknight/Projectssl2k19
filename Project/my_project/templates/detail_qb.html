@@ -10,6 +10,10 @@
  </span>
 
  <span>
+     <button><a href="{% url 'Home:add_ques_manually' name=qb_name %}">Add Question Manually</a></button>
+ </span>
+
+ <span>
      <button><a href="{% url 'Home:delete_qb' name=qb_name %}">Delete this Question Bank</a></button>
  </span>
 
@@ -17,6 +21,14 @@
         <p>
             <a href= "/media/{{ qb.file }}" target="_blank">{{ qb.file }}</a>
 <!--            {{ qb.file }}-->
+        </p>
+    {% endfor %}
+
+    {% for ques in ques_list %}
+        <p>
+<!--            <a href= "/media/{{ qb.file }}" target="_blank">{{ qb.file }}</a>-->
+<!--            {{ qb.file }}-->
+            {{ ques.tag }}
         </p>
     {% endfor %}
 
