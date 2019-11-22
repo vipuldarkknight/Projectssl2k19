@@ -30,7 +30,7 @@ class Questions_Main(models.Model):
     answer = models.TextField(blank=True, null=True)
     marks = models.IntegerField()
     difficulty = models.CharField(max_length=100, choices=DIFFICULTY_CHOICES, default=EASY)
-    tag = models.CharField(max_length=30, primary_key=True)
+    tag = models.CharField(max_length=30)
 
     def __str__(self):
         return self.tag
