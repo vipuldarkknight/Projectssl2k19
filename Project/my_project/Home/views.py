@@ -29,12 +29,11 @@ def add_qb(request):
 
 def add_ques_manually(request, name):
     if request.method == 'POST':
-        form = QuestionForm(request.POST, request.FILES)
+        form = QuestionForm(request.POST)
         if form.is_valid():
             ques = form.save(commit=False)
             ques.username = request.user.username
             ques.qb_name = name
-            ques.marks=3
             ques.save()
             return redirect('Home:detail_qb', name=name)
             # return HttpResponse(name)
@@ -45,6 +44,26 @@ def add_ques_manually(request, name):
     return render(request, 'add_ques_manually.html', {
         'form': form
     })
+
+def edit_ques(request, name):
+    ques_instance = Questions_Main(username=request.user.username, qb_name=name)
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=ques_instance)
+        if form.is_valid():
+            ques = form.save(commit=False)
+            ques.username = request.user.username
+            ques.qb_name = name
+            ques.save()
+            return redirect('Home:detail_qb', name=name)
+
+    else:
+        form = QuestionForm(instance=ques_instance)
+
+        return render(request, 'add_ques_manually.html', {
+            'form': form
+        })
+
 
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
@@ -80,4 +99,5 @@ def upload_qbfile(request, name):
 def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
+
 
