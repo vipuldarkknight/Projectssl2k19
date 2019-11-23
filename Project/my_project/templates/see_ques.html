@@ -7,7 +7,7 @@
  <div class="container">
     {% for paper in paper_list %}
 
-        <div style="background-color: #55AED6;padding: 5px 5px 5px 10px"> {{ paper.name }}</div>
+        <div style="background-color: #55AED6;padding: 5px 5px 5px 10px"><a href="{% url 'Home:paper_detail' %}"> {{ paper.name }}</a></div>
         <br>
           <!-- {{ qb.username }} -->
     {% endfor %}

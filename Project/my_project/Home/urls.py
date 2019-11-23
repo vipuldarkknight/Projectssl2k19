@@ -15,10 +15,12 @@ urlpatterns = [
     path('view_ques/<id>/', views.view_ques, name='view_ques'),
     path('view_ans/<id>/', views.view_ans, name='view_ans'),
     path('upload_qbfile/<name>/', views.upload_qbfile, name='upload_qbfile'),
+    # path('rename_qb/<name>/', views.rename_qb, name='rename_qb'),
     path('delete_qb/<name>/', views.delete_qb, name='delete_qb'),
     path('upload_ques_manually/<name>/', views.add_ques_manually, name='add_ques_manually'),
     path('edit_ques/<id>/', views.edit_ques, name='edit_ques'),
     path('upload_ques_by_file/<name>/', views.add_ques_by_file, name='add_ques_by_file'),
+    path('paper_detail/', views.paper_detail, name='paper_detail'),
 ]
 
 if settings.DEBUG:

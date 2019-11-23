@@ -25,3 +25,8 @@ class CountryForm(forms.Form):
     QP_name = forms.CharField(max_length=150)
     Question_List = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                           choices=OPTION)
+
+class QuestionBankRenameForm(forms.ModelForm):
+    class Meta:
+        model = Question_Banks_Main
+        fields = ('name',)

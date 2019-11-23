@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.template import RequestContext
 
 from . models import Question_Banks_Main, Questions_Main, created_paper
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
@@ -144,8 +144,10 @@ def view_ques(request,id):
 
 def view_ans(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
-    return render (request, 'view_ans.html',{'ques':ques,'id':id})  
-    
+    return render (request, 'view_ans.html',{'ques':ques,'id':id})
+
+ques_form_list = []
+
 def upload_qbfile(request, name):
     if request.method == 'POST':
         form = QuestionBankForm2(request.POST, request.FILES)
@@ -154,73 +156,30 @@ def upload_qbfile(request, name):
             qb.username = request.user.username
             qb.name = name
             qb.save()
-            # l=qsplit(qb.file)
-            # ques_form_list = []
+            l=qsplit(qb.file)
+            global ques_form_list
+            ques_form_list = []
 
-            # file = Question_Banks_Main.objects.last().file
-            # l = qsplit(file)
+            for x in l:
+                ques_l = Questions_Main()
+                if 'statement' in x.keys():
+                    ques_l.statement = x['statement']
+                if 'answer' in x.keys():
+                    ques_l.answer = x['answer']
+                if 'marks' in x.keys():
+                    ques_l.marks = x['marks']
+                if 'difficulty' in x.keys():
+                    ques_l.difficulty = x['difficulty']
+                if 'tag' in x.keys():
+                    ques_l.tag = x['tag']
 
-            # print(file.name)
-            # print(l)
+                # ques_l.username = request.user.username
+                # ques_l.qb_name = name
 
-            # for filename, file in request.FILES.items():
-            #     name2 = request.FILES[filename]
-                # l=qsplit(file)
+                form = QuestionForm(instance=ques_l)
+                ques_form_list.append(form)
 
-            # con = ConfigParser()
-            # print(con)
-            # print(con.read(name2))
-            # sl = con.sections()
-            # print(name2)
-            # ql = []
-            # for s in sl:
-            #     dic = {}
-            #     for op in con.options(s):
-            #         dic[op] = con.get(s, op)
-            #     ql = ql + [dic]
-            #
-            # print(len(ql))
-            #
-            # return HttpResponse(name2)
-
-            # return HttpResponse(len(l))
-            # print(file.name.url)
-
-            # with open(Question_Banks_Main.objects.get(id=16).file, 'wb+') as x:
-            # doc = request.FILES
-            # return HttpResponse(len(l))
-            # r = requests.get(“/media/try.ini”)
-
-            # for x in l:
-            #     ques_l = Questions_Main()
-            #     if 'statement' in x.keys():
-            #         ques_l.statement = x['statement']
-            #     if 'answer' in x.keys():
-            #         ques_l.answer = x['answer']
-            #     if 'marks' in x.keys():
-            #         ques_l.marks = x['marks']
-            #     if 'difficulty' in x.keys():
-            #         ques_l.difficulty = x['difficulty']
-            #     if 'tag' in x.keys():
-            #         ques_l.tag = x['tag']
-            #
-            #     form = QuestionForm(instance=ques_l)
-            #     ques_form_list.append(form)
-            # base_url = reverse('detail_qb')
-            # url = '{}?{}'.format(base_url, name)
-            # return redirect(url)
-
-            # return add_ques_by_file(request, ques_form_list, name)
-
-            return redirect('Home:detail_qb',name = name)
-            # return redirect('Home:add_ques_by_file',name = name)
-            # return HttpResponse(len(ques_form_list))
-            # return redirect('qbList')
-
-            # return render(request, 'add_ques_by_file.html', {
-            #     'qb_name': name,
-            #     'ques_form_list': ques_form_list
-            # })
+            return redirect('Home:add_ques_by_file',name = name)
 
     else:
         form = QuestionBankForm2()
@@ -230,6 +189,7 @@ def upload_qbfile(request, name):
     })
 
 def add_ques_by_file(request, name):
+    global ques_form_list
     if request.method == 'POST':
         form = QuestionForm(request.POST)
         if form.is_valid():
@@ -238,44 +198,73 @@ def add_ques_by_file(request, name):
             ques.qb_name = name
             ques.save()
 
-            # if len(ques_form_list) != 0:
-            #     return redirect('Home:detail_qb', name=name)
-            # else:
-            #     add_ques_by_file(request, ques_form_list[1:], name)
-            return HttpResponse(name)
+            return redirect('Home:add_ques_by_file',name = name)
 
     else:
-        form = QuestionForm()
 
-    return render(request, 'add_ques_manually.html', {
-        'form': form
-    })
+        if len(ques_form_list) > 0:
+
+            form = ques_form_list[0]
+            ques_form_list = ques_form_list[1:]
+
+            return render(request, 'add_ques_by_file.html', {
+                'form': form
+            })
+
+    return redirect('Home:detail_qb', name=name)
 
 
 def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
-# def countries_view(request):
-#     if request.method == 'POST':
-#         form = CountryForm(request.POST)
-#         if form.is_valid():
-#             countries = form.cleaned_data.get('countries')
-#             # do something with your results
-#     else:
-#         form = CountryForm
+def paper_detail(request):
+    paper_instance = created_paper.objects.get(id=1)
+    ques_id_list = paper_instance.ques_id.split()
+    ques_list = []
 
-#     return render_to_response('add_paper.html', {'form': form},
-#                               context_instance=RequestContext(request))
+    for i in ques_id_list:
+        i2 = int(i)
+        ques_temp = Questions_Main.objects.get(id=i2)
+        ques_list.append(ques_temp)
+
+    # filter=QuestionsFilter(request.GET,queryset=ques_list)
+    return render(request, 'paper_detail.html', {
+        # 'filter':filter,
+        'ques_list': ques_list,
+    })
+
+# def rename_qb(request, name):
+#
+#     this_qb = Question_Banks_Main.objects.filter(username=request.user.username, name=name)
+#
+#     if request.method == 'POST':
+#         form = QuestionBankRenameForm(request.POST, instance=this_qb[0])
+#         if form.is_valid():
+#             qb = form.save(commit=False)
+#             qb.username = request.user.username
+#             # qb.save()
+#
+#             for i in this_qb:
+#                 # print(qb.name)
+#                 i.name = qb.name
+#                 i.save()
+#
+#             return redirect('Home:qbList')
+#     else:
+#         form = QuestionBankForm(instance=this_qb[0])
+#
+#     return render(request, 'add_qb.html', {
+#         'form': form
+#     })
+
 
 def qsplit(qfile):
 
     con=ConfigParser()
-    # print(qfile.name)
     path = "media/" + qfile.name
-    print(con.read(path))
+    con.read(path)
     sl=con.sections()
-    print(qfile)
     ql=[]
     for s in sl:
         dic={}
