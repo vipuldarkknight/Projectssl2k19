@@ -20,7 +20,7 @@ urlpatterns = [
     path('upload_ques_manually/<name>/', views.add_ques_manually, name='add_ques_manually'),
     path('edit_ques/<id>/', views.edit_ques, name='edit_ques'),
     path('upload_ques_by_file/<name>/', views.add_ques_by_file, name='add_ques_by_file'),
-    path('paper_detail/', views.paper_detail, name='paper_detail'),
+    path('paper_detail/<name>/', views.paper_detail, name='paper_detail'),
 ]
 
 if settings.DEBUG:

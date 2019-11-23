@@ -19,7 +19,7 @@ def qbList(request):
     })
 
 def your_paper(request):
-    paper_list = created_paper.objects.filter(username=request.user.username).values('name').distinct()
+    paper_list = created_paper.objects.filter(username=request.user.username)
     return render(request, 'see_ques.html', {
         'paper_list': paper_list
     })
@@ -35,7 +35,15 @@ def add_paper(request):
             # qpaper.save()
         # print(qlist)
         # print(request.POST.get('QP_name'))
-        if len(qlist)!=0:
+
+        repeated = False
+        temp = created_paper.objects.filter(username = request.user.username)
+
+        for i in temp:
+            if i.name == qp_name:
+                repeated=True
+
+        if len(qlist)!=0 and repeated==False:
             qp = created_paper()
             qp.name = qp_name
             qp.username = request.user.username
@@ -130,6 +138,7 @@ def edit_ques(request, id):
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
+    print(type(ques_list))
     filter=QuestionsFilter(request.GET,queryset=ques_list)
     return render(request, 'detail_qb.html', {
         'filter':filter,
@@ -218,19 +227,14 @@ def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
-def paper_detail(request):
-    paper_instance = created_paper.objects.get(id=1)
+def paper_detail(request, name):
+    paper_instance = created_paper.objects.filter(username=request.user.username, name=name).get()
     ques_id_list = paper_instance.ques_id.split()
-    ques_list = []
+    ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
 
-    for i in ques_id_list:
-        i2 = int(i)
-        ques_temp = Questions_Main.objects.get(id=i2)
-        ques_list.append(ques_temp)
-
-    # filter=QuestionsFilter(request.GET,queryset=ques_list)
+    filter=QuestionsFilter(request.GET,queryset=ques_list)
     return render(request, 'paper_detail.html', {
-        # 'filter':filter,
+        'filter':filter,
         'ques_list': ques_list,
     })
 

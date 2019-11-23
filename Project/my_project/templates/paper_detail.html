@@ -5,10 +5,10 @@
 {% block content %}
   <h2>Paper Details</h2>
 
-<!--<form method="GET">-->
-<!--{{ filter.form.as_p }}-->
-<!--<button type="submit">Search</button>-->
-<!--</form>-->
+<form method="GET">
+{{ filter.form.as_p }}
+<button type="submit">Search</button>
+</form>
 <br><br>
 <div class="container">
 <table class="userss" style="width: 100%">
@@ -18,7 +18,6 @@
         <th class="tag">tag</th>
         <th class="marks">marks</th>
         <th class="diff">difficulty</th>
-        <th class="ed">edit</th>
     </tr>
     {% for ques in filter.qs %}
     <tr> 
@@ -27,7 +26,6 @@
         <td>{{ ques.tag }}</td>
         <td>{{ ques.marks }}</td>
         <td>{{ ques.difficulty }}</td>
-        <td align="center"><button><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>
