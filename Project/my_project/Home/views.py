@@ -4,7 +4,7 @@ from django.urls import reverse
 from configparser import ConfigParser 
 from . models import Question_Banks_Main, Questions_Main
 from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
-
+from .filters import QuestionsFilter
 # Create your views here.
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
@@ -70,7 +70,9 @@ def edit_ques(request, id):
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
+    filter=QuestionsFilter(request.GET,queryset=ques_list)
     return render(request, 'detail_qb.html', {
+        'filter':filter,
         'qb_detail_list': qb_detail_list,
         'ques_list': ques_list,
         'qb_name': name
@@ -129,3 +131,4 @@ def qsplit(qfile):
             dic[op]=con.get(s,op)
         ql=ql+[dic]    
     return ql        
+    
