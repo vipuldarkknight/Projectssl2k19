@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sign_upusers.apps.SignUpusersConfig',
     'Home',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
