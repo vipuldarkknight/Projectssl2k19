@@ -84,32 +84,100 @@ def upload_qbfile(request, name):
             qb.username = request.user.username
             qb.name = name
             qb.save()
-            l=qsplit(qb.file)
-            
-            for x in l:
-                ques_l = Questions_Main()
-                if statement in x.keys():
-                    ques_l.statement = x[statement]
-                if answer in x.keys():
-                    ques_l.answer = x[answer]
-                if marks in x.keys():
-                    ques_l.marks = x[marks]
-                if difficulty in x.keys():
-                    ques_l.difficulty = x[difficulty]
-                if tag in x.keys():
-                    ques_l.tag = x[tag]
+            # l=qsplit(qb.file)
+            # ques_form_list = []
+
+            # file = Question_Banks_Main.objects.last().file
+            # l = qsplit(file)
+
+            # print(file.name)
+            # print(l)
+
+            # for filename, file in request.FILES.items():
+            #     name2 = request.FILES[filename]
+                # l=qsplit(file)
+
+            # con = ConfigParser()
+            # print(con)
+            # print(con.read(name2))
+            # sl = con.sections()
+            # print(name2)
+            # ql = []
+            # for s in sl:
+            #     dic = {}
+            #     for op in con.options(s):
+            #         dic[op] = con.get(s, op)
+            #     ql = ql + [dic]
+            #
+            # print(len(ql))
+            #
+            # return HttpResponse(name2)
+
+            # return HttpResponse(len(l))
+            # print(file.name.url)
+
+            # with open(Question_Banks_Main.objects.get(id=16).file, 'wb+') as x:
+            # doc = request.FILES
+            # return HttpResponse(len(l))
+            # r = requests.get(“/media/try.ini”)
+
+            # for x in l:
+            #     ques_l = Questions_Main()
+            #     if 'statement' in x.keys():
+            #         ques_l.statement = x['statement']
+            #     if 'answer' in x.keys():
+            #         ques_l.answer = x['answer']
+            #     if 'marks' in x.keys():
+            #         ques_l.marks = x['marks']
+            #     if 'difficulty' in x.keys():
+            #         ques_l.difficulty = x['difficulty']
+            #     if 'tag' in x.keys():
+            #         ques_l.tag = x['tag']
+            #
+            #     form = QuestionForm(instance=ques_l)
+            #     ques_form_list.append(form)
             # base_url = reverse('detail_qb')
             # url = '{}?{}'.format(base_url, name)
             # return redirect(url)
-            # return redirect('Home:detail_qb',name = name)
-            # return HttpResponse(name)
+
+            # return add_ques_by_file(request, ques_form_list, name)
+
+            return redirect('Home:detail_qb',name = name)
+            # return redirect('Home:add_ques_by_file',name = name)
+            # return HttpResponse(len(ques_form_list))
             # return redirect('qbList')
-            
-            form = QuestionForm(instance=ques_instance)
+
+            # return render(request, 'add_ques_by_file.html', {
+            #     'qb_name': name,
+            #     'ques_form_list': ques_form_list
+            # })
+
     else:
         form = QuestionBankForm2()
 
     return render(request, 'add_qbfile.html', {
+        'form': form
+    })
+
+def add_ques_by_file(request, name):
+    if request.method == 'POST':
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            ques = form.save(commit=False)
+            ques.username = request.user.username
+            ques.qb_name = name
+            ques.save()
+
+            # if len(ques_form_list) != 0:
+            #     return redirect('Home:detail_qb', name=name)
+            # else:
+            #     add_ques_by_file(request, ques_form_list[1:], name)
+            return HttpResponse(name)
+
+    else:
+        form = QuestionForm()
+
+    return render(request, 'add_ques_manually.html', {
         'form': form
     })
 
@@ -119,13 +187,17 @@ def delete_qb(request, name):
     return redirect('Home:qbList')
 
 def qsplit(qfile):
+
     con=ConfigParser()
-    con.read(qfile)
+    # print(qfile.name)
+    path = "media/" + qfile.name
+    print(con.read(path))
     sl=con.sections()
+    print(qfile)
     ql=[]
     for s in sl:
         dic={}
         for op in con.options(s):
             dic[op]=con.get(s,op)
-        ql=ql+[dic]    
-    return ql        
+        ql=ql+[dic]
+    return ql
