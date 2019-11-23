@@ -35,4 +35,13 @@ class Questions_Main(models.Model):
     def __str__(self):
         return self.tag
 
+class created_paper(models.Model):
+    username = models.CharField(max_length=150)
+    name = models.CharField(max_length=150)
+    num_ques = models.IntegerField()
+    marks = models.IntegerField()
+    ques_id = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
 

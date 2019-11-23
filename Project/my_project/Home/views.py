@@ -1,15 +1,71 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
-from django.urls import reverse
 
-from . models import Question_Banks_Main, Questions_Main
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, render_to_response
+from django.urls import reverse
+from django.template import RequestContext
+
+from . models import Question_Banks_Main, Questions_Main, created_paper
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm
 
 # Create your views here.
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {
         'qb_list': qb_list
+    })
+
+def your_paper(request):
+    paper_list = created_paper.objects.filter(username=request.user.username).values('name').distinct()
+    return render(request, 'see_ques.html', {
+        'paper_list': paper_list
+    })
+
+def add_paper(request):
+    if request.method == 'POST':
+        form = CountryForm(request.POST)
+        qlist = request.POST.getlist('Question_List')
+        qp_name = request.POST.get('QP_name')
+        # if form.is_valid():
+            # qpaper = form.save(commit=False)
+            # qpaper.username = request.user.username
+            # qpaper.save()
+        # print(qlist)
+        # print(request.POST.get('QP_name'))
+        if len(qlist)!=0:
+            qp = created_paper()
+            qp.name = qp_name
+            qp.username = request.user.username
+            qp.num_ques = len(qlist)
+
+            ids = ""
+            marks_sum = 0
+
+            for i in qlist:
+                id_temp = i[0]
+                ids = ids + id_temp + " "
+                ques_temp = Questions_Main.objects.filter(id=id_temp).get()
+                marks_sum = marks_sum + ques_temp.marks
+
+            qp.marks = marks_sum
+            qp.ques_id = ids
+            qp.save()
+
+        return redirect('Home:your_paper')
+    else:
+        form = CountryForm()
+        q_list = Questions_Main.objects.filter(username=request.user.username)
+        # print(q_list)
+        q_tup = []
+        for i in q_list:
+            x=[i.id,i.tag]
+            x=tuple(x)
+            q_tup.append(x)
+        q_tup = tuple(q_tup)
+        # print(request.user.username)
+        form.fields["Question_List"].choices = q_tup
+
+    return render(request, 'add_paper.html', {
+        'form': form
     })
 
 def add_qb(request):
@@ -80,4 +136,16 @@ def upload_qbfile(request, name):
 def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
+
+def countries_view(request):
+    if request.method == 'POST':
+        form = CountryForm(request.POST)
+        if form.is_valid():
+            countries = form.cleaned_data.get('countries')
+            # do something with your results
+    else:
+        form = CountryForm
+
+    return render_to_response('add_paper.html', {'form': form},
+                              context_instance=RequestContext(request))
 

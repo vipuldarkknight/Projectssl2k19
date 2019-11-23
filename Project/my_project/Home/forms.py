@@ -19,3 +19,9 @@ class QuestionForm(forms.ModelForm):
         fields = ('statement', 'answer', 'marks', 'difficulty', 'tag')
         # exclude = ['username', 'file']
 
+class CountryForm(forms.Form):
+    OPTION = (
+    )
+    QP_name = forms.CharField(max_length=150)
+    Question_List = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
+                                          choices=OPTION)

@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Add_Paper{% endblock %}
+
+{% block content %}
+  <h2>Create your Question Paper</h2>
+ <div class="container">
+  <form method="post">
+    {% csrf_token %}
+    {{form.as_table}}
+
+     <button type="submit" value="submit">Create</button>
+  </form>
+ </div>
+{% endblock %}
