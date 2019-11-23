@@ -23,19 +23,19 @@
 {{ filter.form.as_p }}
 <button type="submit">Search</button>
 </form>
-<table style="width: 100%">
+<table class="users" style="width: 100%">
     <tr>
-        <th>statement</th>
-        <th>answer</th>
-        <th>tag</th>
-        <th>marks</th>
-        <th>difficulty</th>
-        <th>edit</th>
+        <th class="stat">statement</th>
+        <th class="ans">answer</th>
+        <th class="tag">tag</th>
+        <th class="marks">marks</th>
+        <th class="diff">difficulty</th>
+        <th class="ed">edit</th>
     </tr>
     {% for ques in filter.qs %}
     <tr> 
-        <td>{{ ques.statement }}</td>
-        <td>{{ ques.answer }}</td>
+        <td><div><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td><div><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
         <td>{{ ques.tag }}</td>
         <td>{{ ques.marks }}</td>
         <td>{{ ques.difficulty }}</td>

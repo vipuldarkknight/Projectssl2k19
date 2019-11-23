@@ -77,7 +77,15 @@ def detail_qb(request, name):
         'ques_list': ques_list,
         'qb_name': name
     })
+def view_ques(request,id):
+    ques=Questions_Main.objects.filter(id=id).get()
+    return render (request, 'view_ques.html',{'ques':ques,'id':id})   
+    
 
+def view_ans(request,id):
+    ques=Questions_Main.objects.filter(id=id).get()
+    return render (request, 'view_ans.html',{'ques':ques,'id':id})  
+    
 def upload_qbfile(request, name):
     if request.method == 'POST':
         form = QuestionBankForm2(request.POST, request.FILES)

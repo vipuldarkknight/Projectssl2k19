@@ -10,7 +10,45 @@
   	table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
+	}
+	td > div {
+  height:30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+.users {
+  table-layout: fixed;
+  width: 100%;
+  white-space: nowrap;
+}
+/*.users td {
+  white-space: nowrap;
+  overflow: hidden;
+  height:50px;
+  text-overflow: ellipsis;
+}*/
+
+/* Column widths are based on these cells */
+.stat {
+  width: 32.5%;
+}
+.ans {
+  width: 32.5%;
+}
+.tag {
+  width: 15%;
+}
+.marks{
+	width: 10%;
+}
+.diff {
+  width: 5%;
+}
+.ed {
+width: 5%;
+}
+  	
   	.button {
   	outline: none;
   	background-color: #4CAF50; /* Green */
@@ -66,6 +104,12 @@
 	a.four:hover {font-family:monospace;}
 	a.two:hover {font-size:150%;}
   </style>
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 </head>
 <body>
   <main>
