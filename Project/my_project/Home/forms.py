@@ -23,6 +23,7 @@ class CountryForm(forms.Form):
     OPTION = ()
     OPTION2 = ()
     QP_name = forms.CharField(max_length=150)
+    Duration = forms.CharField(max_length=150)
     Question_List = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                           choices=OPTION)
     Question_Module_List = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
