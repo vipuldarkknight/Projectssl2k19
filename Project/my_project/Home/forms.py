@@ -42,7 +42,7 @@ class SingleCorrectForm(forms.Form):
     Choice1 = forms.CharField()
     Choice2 = forms.CharField()
     Choice3 = forms.CharField()
-    CHoice4 = forms.CharField()
+    Choice4 = forms.CharField()
     Answer = forms.CharField(label="Answer",widget=forms.Select(choices=ANSWER_CHOICES ), required = False)
 
 class MatchtheColumnForm(forms.Form):
@@ -58,7 +58,7 @@ class MatchtheColumnForm(forms.Form):
     Choice1 = forms.CharField()
     Choice2 = forms.CharField()
     Choice3 = forms.CharField()
-    CHoice4 = forms.CharField()
+    Choice4 = forms.CharField()
     Answer1 = forms.CharField(label="Answer1",widget=forms.Select(choices=ANSWER_CHOICES ), required = False)
     Answer2 = forms.CharField(label="Answer2",widget=forms.Select(choices=ANSWER_CHOICES ), required = False)
     Answer3 = forms.CharField(label="Answer3",widget=forms.Select(choices=ANSWER_CHOICES ), required = False)
@@ -86,7 +86,7 @@ class MultiCorrectForm(forms.Form):
     Choice1 = forms.CharField()
     Choice2 = forms.CharField()
     Choice3 = forms.CharField()
-    CHoice4 = forms.CharField()
+    Choice4 = forms.CharField()
     Choose_Answers = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,
                                           choices=OPTION, required=False)
     # Question_Module_List = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple,

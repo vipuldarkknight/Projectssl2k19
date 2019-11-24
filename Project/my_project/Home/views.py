@@ -26,7 +26,39 @@ def SingleCorrectMCQ(request, name):
         book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
         if article_formset.is_valid() and book_formset.is_valid():
             # do something with the cleaned_data on the formsets.
-            pass
+
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans = data['Answer']
+
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans
+            q.qtype=2
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)            
+
     else:
         article_formset = ArticleFormSet(prefix='articles')
         book_formset = BookFormSet(prefix='books')
@@ -42,8 +74,42 @@ def MultiCorrectMCQ(request, name):
         article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
         book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
         if article_formset.is_valid() and book_formset.is_valid():
-            # do something with the cleaned_data on the formsets.
-            pass
+            
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans = data['Choose_Answers']
+                qans_string = ""
+
+                for a in qans:
+                    qans_string = qans_string + a + "\n"
+
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans_string
+            q.qtype=3
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)
     else:
         article_formset = ArticleFormSet(prefix='articles')
         book_formset = BookFormSet(prefix='books')
@@ -61,8 +127,54 @@ def matchthecolumns(request, name):
         article_formset1 = ArticleFormSet1(request.POST, request.FILES, prefix='articles1')
         book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
         if article_formset.is_valid() and book_formset.is_valid() and article_formset1.is_valid():
-            # do something with the cleaned_data on the formsets.
-            pass
+            
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+        
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans1 = data['Answer1']
+                qans2 = data['Answer2']
+                qans3 = data['Answer3']
+                qans4 = data['Answer4']
+
+            for data in article_formset1.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['A'] + "\n"
+                statement_final = statement_final + "B) " + data['B'] + "\n"
+                statement_final = statement_final + "C) " + data['C'] + "\n"
+                statement_final = statement_final + "D) " + data['D'] + "\n"
+
+
+            qans_string=""
+            qans_string = qans1 + "\n" + qans2 + "\n" + qans3 + "\n" + qans4 + "\n" 
+            
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans_string
+            q.qtype=4
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)
+
+
     else:
         article_formset1 = ArticleFormSet1(prefix='articles1')
         article_formset = ArticleFormSet(prefix='articles')
@@ -192,6 +304,7 @@ def add_ques_manually(request, name):
             ques = form.save(commit=False)
             ques.username = request.user.username
             ques.qb_name = name
+            ques.qtype = 1
             ques.save()
             return redirect('Home:detail_qb', name=name)
             # return HttpResponse(name)
