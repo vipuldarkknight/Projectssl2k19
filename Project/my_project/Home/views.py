@@ -4,13 +4,13 @@ from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.template import RequestContext
 
-from . models import Question_Banks_Main, Questions_Main, created_paper
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm
+from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
 # from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
-from .filters import QuestionsFilter
+from .filters import QuestionsFilter, SubQuestionsFilter
 # Create your views here.
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
@@ -138,13 +138,14 @@ def edit_ques(request, id):
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
-    print(type(ques_list))
+    ques_module_list = Question_Module.objects.filter(username=request.user.username, qb_name=name)
     filter=QuestionsFilter(request.GET,queryset=ques_list)
     return render(request, 'detail_qb.html', {
         'filter':filter,
         'qb_detail_list': qb_detail_list,
         'ques_list': ques_list,
-        'qb_name': name
+        'qb_name': name,
+        'ques_module_list': ques_module_list
     })
 def view_ques(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
@@ -236,7 +237,108 @@ def paper_detail(request, name):
     return render(request, 'paper_detail.html', {
         'filter':filter,
         'ques_list': ques_list,
+        'paper': paper_instance
     })
+
+no_of_subquestions=0
+
+def add_ques_module(request, name):
+    if request.method == 'POST':
+        form = QuestionModuleForm(request.POST)
+        if form.is_valid():
+            ques_module = form.save(commit=False)
+            ques_module.username = request.user.username
+            ques_module.qb_name = name
+            ques_module.ques_id_string = ""
+            ques_module.marks=0
+            ques_module.save()
+
+            global no_of_subquestions
+            no_of_subquestions = ques_module.subquestions
+
+            return redirect('Home:add_subques', id=ques_module.id)
+            # return HttpResponse(name)
+
+    else:
+        form = QuestionModuleForm()
+
+    return render(request, 'add_ques_module.html', {
+        'form': form
+    })
+
+def add_subques(request, id):
+
+    global no_of_subquestions
+    ques_module = Question_Module.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = SubQuestionForm(request.POST)
+        if form.is_valid():
+            ques = form.save(commit=False)
+            ques.question_module_id = id
+            ques.save()
+
+            print(ques.marks)
+            ques_module.marks = ques_module.marks + ques.marks
+            ques_module.ques_id_string = ques_module.ques_id_string + str(ques.id) + " "
+            ques_module.save()
+            return redirect('Home:add_subques', id=id)
+            # return HttpResponse(name)
+
+    else:
+
+        if no_of_subquestions > 0:
+
+            no_of_subquestions = no_of_subquestions -1
+            form = SubQuestionForm()
+
+            return render(request, 'add_ques_manually.html', {
+                'form':form
+            })
+
+    name = ques_module.qb_name
+    return redirect('Home:detail_qb', name=name)
+
+def ques_module_detail(request, id):
+    ques_list = SubQuestions.objects.filter(question_module_id=id)
+    filter=SubQuestionsFilter(request.GET,queryset=ques_list)
+    ques_module = Question_Module.objects.get(id=id)
+    name = ques_module.qb_name
+    return render(request, 'ques_module_detail.html', {
+        'filter':filter,
+        'ques_list': ques_list,
+        'qb_name': name,
+        'ques_module': ques_module
+    })
+
+
+def view_subques(request, id):
+    ques = SubQuestions.objects.filter(id=id).get()
+    return render(request, 'view_ques.html', {'ques': ques, 'id': id})
+
+
+def view_subans(request, id):
+    ques = SubQuestions.objects.filter(id=id).get()
+    return render(request, 'view_ans.html', {'ques': ques, 'id': id})
+
+def edit_subques(request, id):
+    ques_instance = SubQuestions.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = SubQuestionForm(request.POST, instance=ques_instance)
+        if form.is_valid():
+            ques = form.save(commit=False)
+            ques.question_module_id = id
+            ques.save()
+            return redirect('Home:ques_module_detail', id=id)
+
+    else:
+        form = SubQuestionForm(instance=ques_instance)
+
+        return render(request, 'add_ques_manually.html', {
+            'form': form
+        })
+
 
 # def rename_qb(request, name):
 #

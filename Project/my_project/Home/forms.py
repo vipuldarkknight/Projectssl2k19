@@ -1,5 +1,5 @@
 from django import forms
-from .models import Question_Banks_Main, Questions_Main
+from .models import Question_Banks_Main, Questions_Main, Question_Module, SubQuestions
 
 class QuestionBankForm(forms.ModelForm):
     class Meta:
@@ -30,3 +30,14 @@ class QuestionBankRenameForm(forms.ModelForm):
     class Meta:
         model = Question_Banks_Main
         fields = ('name',)
+
+class QuestionModuleForm(forms.ModelForm):
+    class Meta:
+        model = Question_Module
+        fields = ('statement', 'subquestions')
+
+class SubQuestionForm(forms.ModelForm):
+    class Meta:
+        model = SubQuestions
+        fields = ('statement', 'answer', 'marks', 'difficulty', 'tag')
+        # exclude = ['username', 'file']
