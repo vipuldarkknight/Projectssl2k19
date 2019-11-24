@@ -10,7 +10,7 @@ from django.forms import formset_factory
 # from django.shortcuts import render
 # from myapp.forms import ArticleForm
 from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
@@ -32,6 +32,44 @@ def SingleCorrectMCQ(request, name):
         book_formset = BookFormSet(prefix='books')
     return render(request, 'single_correct.html', {
         'article_formset': article_formset,
+        'book_formset': book_formset,
+    })
+
+def MultiCorrectMCQ(request, name):
+    ArticleFormSet = formset_factory(MultiCorrectForm, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid():
+            # do something with the cleaned_data on the formsets.
+            pass
+    else:
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'multi_correct.html', {
+        'article_formset': article_formset,
+        'book_formset': book_formset,
+    })
+
+def matchthecolumns(request, name):
+    ArticleFormSet = formset_factory(MatchtheColumnForm, extra=2, max_num=1)
+    ArticleFormSet1 = formset_factory(MatchtheColumn2Form, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        article_formset1 = ArticleFormSet1(request.POST, request.FILES, prefix='articles1')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid() and article_formset1.is_valid():
+            # do something with the cleaned_data on the formsets.
+            pass
+    else:
+        article_formset1 = ArticleFormSet1(prefix='articles1')
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'matchcolumns.html', {
+        'article_formset': article_formset,
+        'article_formset1': article_formset1,
         'book_formset': book_formset,
     })
 
@@ -140,6 +178,12 @@ def add_qb(request):
     return render(request, 'add_qb.html', {
         'form': form
     })
+
+def add_ques(request, name):
+    return render(request, 'add_ques.html', {
+        'name': name
+    })
+
 
 def add_ques_manually(request, name):
     if request.method == 'POST':

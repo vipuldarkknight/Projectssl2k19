@@ -3,9 +3,10 @@
 {% block title %}Single Correct MCQ{% endblock %}
 
 {% block content %}
-<h2>Add your Question here</h2>
+<h2>Add Single_correct MCQ's here</h2>
 <div class="container">
-        <form method="post">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             <table>
                 {{ book_formset }}
             </table>    
@@ -13,7 +14,8 @@
             <table>
                 {{ article_formset }}
             </table>
-                
+            <br>
+            <button type="submit">Upload</button>     
 
             </form>
 </div>
