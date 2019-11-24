@@ -1,4 +1,6 @@
 from itertools import chain
+
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
@@ -21,9 +23,11 @@ from .filters import QuestionsFilter, SubQuestionsFilter
 from django.http import HttpResponse
 from django.views.generic import View
 from .utils import render_to_pdf
+from django.contrib import messages
 
 # Create your views here.
 
+@login_required
 def SingleCorrectMCQ(request, name):
     ArticleFormSet = formset_factory(SingleCorrectForm, extra=2, max_num=1)
     BookFormSet = formset_factory(MCQForm)
@@ -64,7 +68,6 @@ def SingleCorrectMCQ(request, name):
             q.save()
 
             return redirect('Home:detail_qb', name=name)            
-
     else:
         article_formset = ArticleFormSet(prefix='articles')
         book_formset = BookFormSet(prefix='books')
@@ -73,6 +76,7 @@ def SingleCorrectMCQ(request, name):
         'book_formset': book_formset,
     })
 
+@login_required
 def MultiCorrectMCQ(request, name):
     ArticleFormSet = formset_factory(MultiCorrectForm, extra=2, max_num=1)
     BookFormSet = formset_factory(MCQForm)
@@ -124,6 +128,7 @@ def MultiCorrectMCQ(request, name):
         'book_formset': book_formset,
     })
 
+@login_required
 def matchthecolumns(request, name):
     ArticleFormSet = formset_factory(MatchtheColumnForm, extra=2, max_num=1)
     ArticleFormSet1 = formset_factory(MatchtheColumn2Form, extra=2, max_num=1)
@@ -191,19 +196,20 @@ def matchthecolumns(request, name):
         'book_formset': book_formset,
     })
 
-
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {
         'qb_list': qb_list
     })
 
+@login_required
 def your_paper(request):
     paper_list = created_paper.objects.filter(username=request.user.username)
     return render(request, 'see_ques.html', {
         'paper_list': paper_list
     })
 
+@login_required
 def add_paper(request):
     if request.method == 'POST':
         form = CountryForm(request.POST)
@@ -258,7 +264,13 @@ def add_paper(request):
                 qp.ques_module_id = qm_ids
                 qp.save()
 
-        return redirect('Home:your_paper')
+                return redirect('Home:your_paper')
+            else:
+                messages.add_message(request, messages.INFO, 'Questions cannot be empty')
+                return redirect('Home:add_paper')
+        else:
+            messages.add_message(request, messages.INFO, 'Same Name Paper Already Exists')
+            return redirect('Home:add_paper')
     else:
         form = CountryForm()
         q_list = Questions_Main.objects.filter(username=request.user.username)
@@ -267,7 +279,7 @@ def add_paper(request):
         q_tup = []
         qm_tup=[]
         for i in q_list:
-            x=[i.id,i.tag]
+            x=[i.id,i.statement[:100]]
             x=tuple(x)
             q_tup.append(x)
         for i in qm_list:
@@ -284,11 +296,20 @@ def add_paper(request):
         'form': form
     })
 
+@login_required
 def add_qb(request):
     if request.method == 'POST':
         form = QuestionBankForm(request.POST, request.FILES)
+        qb_list = Question_Banks_Main.objects.filter(username=request.user.username)
         if form.is_valid():
+
             qb = form.save(commit=False)
+
+            for x in qb_list:
+                if qb.name == x.name:
+                    messages.add_message(request, messages.INFO, 'Same Name Question Bank Already Exists')
+                    return redirect('Home:add_qb')
+
             qb.username = request.user.username
             qb.save()
             return redirect('Home:qbList')
@@ -299,12 +320,13 @@ def add_qb(request):
         'form': form
     })
 
+@login_required
 def add_ques(request, name):
     return render(request, 'add_ques.html', {
         'name': name
     })
 
-
+@login_required
 def add_ques_manually(request, name):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -324,6 +346,7 @@ def add_ques_manually(request, name):
         'form': form
     })
 
+@login_required
 def edit_ques(request, id):
     ques_instance = Questions_Main.objects.get(id=id)
 
@@ -345,7 +368,7 @@ def edit_ques(request, id):
             'form': form
         })
 
-
+@login_required
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
@@ -358,17 +381,20 @@ def detail_qb(request, name):
         'qb_name': name,
         'ques_module_list': ques_module_list
     })
+
+@login_required
 def view_ques(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
     return render (request, 'view_ques.html',{'ques':ques,'id':id})   
     
-
+@login_required
 def view_ans(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
     return render (request, 'view_ans.html',{'ques':ques,'id':id})
 
 ques_form_list = []
 
+@login_required
 def upload_qbfile(request, name):
     if request.method == 'POST':
         form = QuestionBankForm2(request.POST, request.FILES)
@@ -409,6 +435,7 @@ def upload_qbfile(request, name):
         'form': form
     })
 
+@login_required
 def add_ques_by_file(request, name):
     global ques_form_list
     if request.method == 'POST':
@@ -435,11 +462,12 @@ def add_ques_by_file(request, name):
 
     return redirect('Home:detail_qb', name=name)
 
-
+@login_required
 def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
+@login_required
 def paper_detail(request, name):
     paper_instance = created_paper.objects.filter(username=request.user.username, name=name).get()
     ques_id_list = paper_instance.ques_id.split()
@@ -458,6 +486,7 @@ def paper_detail(request, name):
 
 no_of_subquestions=0
 
+@login_required
 def add_ques_module(request, name):
     if request.method == 'POST':
         form = QuestionModuleForm(request.POST)
@@ -482,6 +511,7 @@ def add_ques_module(request, name):
         'form': form
     })
 
+@login_required
 def add_subques(request, id):
 
     global no_of_subquestions
@@ -515,6 +545,7 @@ def add_subques(request, id):
     name = ques_module.qb_name
     return redirect('Home:detail_qb', name=name)
 
+@login_required
 def ques_module_detail(request, id):
     ques_list = SubQuestions.objects.filter(question_module_id=id)
     filter=SubQuestionsFilter(request.GET,queryset=ques_list)
@@ -527,16 +558,17 @@ def ques_module_detail(request, id):
         'ques_module': ques_module
     })
 
-
+@login_required
 def view_subques(request, id):
     ques = SubQuestions.objects.filter(id=id).get()
     return render(request, 'view_ques.html', {'ques': ques, 'id': id})
 
-
+@login_required
 def view_subans(request, id):
     ques = SubQuestions.objects.filter(id=id).get()
     return render(request, 'view_ans.html', {'ques': ques, 'id': id})
 
+@login_required
 def edit_subques(request, id):
     ques_instance = SubQuestions.objects.get(id=id)
 
