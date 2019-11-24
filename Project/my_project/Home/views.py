@@ -1,4 +1,4 @@
-
+from itertools import chain
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
@@ -413,10 +413,12 @@ def generate_pdf(request,id):
     ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
     quesm_id_list = paper_instance.ques_module_id.split()
     quesm_list = Question_Module.objects.filter(pk__in=quesm_id_list)
+    comb_list=chain(ques_list,quesm_list)
     data = {
          'quesm_list':quesm_list,
          'ques_list':ques_list,
-         'paper':paper_instance
+         'paper':paper_instance,
+         'comb_list':comb_list
     }
     pdf = render_to_pdf('quiz_template.html', data)
     if pdf:

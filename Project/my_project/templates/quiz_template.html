@@ -2,15 +2,42 @@
 <head>
   <title>QUIZ</title>
   <style>
-    body {
-      background-color: #f7f7f7;
+    table
+    {
+       border: 1px solid black;
+      border-collapse: collapse;
     }
   </style>
 </head>
 <body>
   <h1>{{ paper.name }}</h1>
+  <h2> Maximum marks : {{ paper.marks }} </h2>
+  <!-- <h3> Duration : {{ paper.duration }} </h3> -->
+<div class="container">
+<table style="width: 100%">
+   <thead> 
+    <tr>
+        <th>S.No.</th>
+        <th>Maximum marks</th>
+        <th>Marks obtained</th>
+    </tr>
+  </thead>
+    <tbody>
+        {% for ques in comb_list %}
+    <tr> 
+        <td style='text-align: center;'>{{ forloop.counter }}</td>
+        <td style="text-align: center;">{{ ques.marks }}</td>
+        <td> </td>
+    </tr>
+    {% endfor %}    
+    </tbody>
+
+</table>
+</div>
+<!-- 
   {% for ques in ques_list %}
     <p>{{ ques }}</p>
-  {% endfor %}
+  {% endfor %} -->
 </body>
 </html>
+
