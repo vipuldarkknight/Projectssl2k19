@@ -18,6 +18,7 @@
 <button type="submit">Search</button>
 </form>
 <br><br>
+<h2>Questions</h2>
 <div class="container">
 <table class="users" style="width: 100%">
     <tr>
@@ -38,6 +39,13 @@
     {% endfor %}
 </table>
 </div>
+
+<h2>Question Modules</h2>
+
+{% for qm in ques_module_list %}
+    <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
+{% endfor %}
+
 <br><br>
 <span>
      <button><a href="{% url 'Home:generate_pdf' id=paper.id %}" target="_blank">Export PDF</a></button>

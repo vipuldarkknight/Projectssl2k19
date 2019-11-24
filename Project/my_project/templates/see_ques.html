@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-
 {% block title %}See_ques{% endblock %}
 
 {% block content %}
@@ -16,12 +15,13 @@
     <tr>
         <td><div><a href="{% url 'Home:paper_detail' name=paper.name %}"> {{ paper.name }}</a></div></td>
         <td>{{ paper.marks }}</td>
-        <td>{{ paper.num_ques }}</td>
+        <td>{{ paper.total_sum_ques }}</td>
     </tr>
     {% endfor %}
 </table>
 
          <button class="button button2"><a  href="{% url 'Home:add_paper' %}">Create a Question Paper</a></button>
+     <button class="button button2"><a  href="{% url 'Home:qbList' %}">Home</a></button>
 
     
 </div>

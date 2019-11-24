@@ -73,7 +73,9 @@ def add_paper(request):
                     marks_sum = marks_sum + ques_module_temp.marks
 
                 qp.marks = marks_sum
+                qp.total_sum_ques = len(qlist) + len(qmlist)
                 qp.ques_id = ids
+                qp.ques_module_id = qm_ids
                 qp.save()
 
         return redirect('Home:your_paper')
@@ -254,11 +256,15 @@ def paper_detail(request, name):
     paper_instance = created_paper.objects.filter(username=request.user.username, name=name).get()
     ques_id_list = paper_instance.ques_id.split()
     ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
+    ques_module_id_list = paper_instance.ques_module_id.split()
+    ques_module_list = Question_Module.objects.filter(pk__in=ques_module_id_list)
+    print(paper_instance.ques_module_id)
 
     filter=QuestionsFilter(request.GET,queryset=ques_list)
     return render(request, 'paper_detail.html', {
         'filter':filter,
         'ques_list': ques_list,
+        'ques_module_list': ques_module_list,
         'paper': paper_instance
     })
 
