@@ -48,8 +48,8 @@
     </tr>
     {% for ques in filter.qs %}
     <tr> 
-        <td><div><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td><div><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
+        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
         <td>{{ ques.tag }}</td>
         <td>{{ ques.marks }}</td>
         <td>{{ ques.difficulty }}</td>

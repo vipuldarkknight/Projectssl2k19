@@ -208,6 +208,7 @@ def add_paper(request):
     if request.method == 'POST':
         form = CountryForm(request.POST)
         qlist = request.POST.getlist('Question_List')
+        # print(qlist)
         qmlist = request.POST.getlist('Question_Module_List')
         qp_name = request.POST.get('QP_name')
         qp_duration = request.POST.get('Duration')
@@ -239,13 +240,14 @@ def add_paper(request):
                 marks_sum = 0
 
                 for i in qlist:
-                    id_temp = i[0]
+                    id_temp = i
+                    print(id_temp)
                     ids = ids + id_temp + " "
                     ques_temp = Questions_Main.objects.filter(id=id_temp).get()
                     marks_sum = marks_sum + ques_temp.marks
 
                 for i in qmlist:
-                    id_temp=i[0]
+                    id_temp=i
                     qm_ids = qm_ids + id_temp + " "
                     ques_module_temp = Question_Module.objects.filter(id=id_temp).get()
                     marks_sum = marks_sum + ques_module_temp.marks
@@ -415,6 +417,7 @@ def add_ques_by_file(request, name):
             ques = form.save(commit=False)
             ques.username = request.user.username
             ques.qb_name = name
+            ques.qtype = 1
             ques.save()
 
             return redirect('Home:add_ques_by_file',name = name)
