@@ -415,12 +415,28 @@ def generate_pdf(request,id):
     ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
     quesm_id_list = paper_instance.ques_module_id.split()
     quesm_list = Question_Module.objects.filter(pk__in=quesm_id_list)
-    comb_list=chain(ques_list,quesm_list)
+    comb_list=chain(quesm_list,ques_list)
+    comb_list2=chain(quesm_list,ques_list)
+    qm_size = len(quesm_list)
+    ll = []
+    
+    cnt=1;
+    
+    for i in quesm_list:
+        subques_temp = SubQuestions.objects.filter(question_module_id=i.id)
+        ll.append((cnt,subques_temp))
+        cnt=cnt+1
+    
+    print(ll)
+    
     data = {
          'quesm_list':quesm_list,
          'ques_list':ques_list,
          'paper':paper_instance,
-         'comb_list':comb_list
+         'comb_list':comb_list,
+         'comb_list2':comb_list2,
+         'qm_size': qm_size,
+         'll': ll
     }
     pdf = render_to_pdf('quiz_template.html', data)
     if pdf:
