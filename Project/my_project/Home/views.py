@@ -28,6 +28,7 @@ def add_paper(request):
     if request.method == 'POST':
         form = CountryForm(request.POST)
         qlist = request.POST.getlist('Question_List')
+        qmlist = request.POST.getlist('Question_Module_List')
         qp_name = request.POST.get('QP_name')
         # if form.is_valid():
             # qpaper = form.save(commit=False)
@@ -43,38 +44,55 @@ def add_paper(request):
             if i.name == qp_name:
                 repeated=True
 
-        if len(qlist)!=0 and repeated==False:
-            qp = created_paper()
-            qp.name = qp_name
-            qp.username = request.user.username
-            qp.num_ques = len(qlist)
+        if repeated==False:
+            if len(qlist)!=0 or len(qmlist)!=0:
+                qp = created_paper()
+                qp.name = qp_name
+                qp.username = request.user.username
+                qp.num_ques = len(qlist)
+                qp.num_ques_modules = len(qmlist)
 
-            ids = ""
-            marks_sum = 0
+                ids = ""
+                qm_ids=""
+                marks_sum = 0
 
-            for i in qlist:
-                id_temp = i[0]
-                ids = ids + id_temp + " "
-                ques_temp = Questions_Main.objects.filter(id=id_temp).get()
-                marks_sum = marks_sum + ques_temp.marks
+                for i in qlist:
+                    id_temp = i[0]
+                    ids = ids + id_temp + " "
+                    ques_temp = Questions_Main.objects.filter(id=id_temp).get()
+                    marks_sum = marks_sum + ques_temp.marks
 
-            qp.marks = marks_sum
-            qp.ques_id = ids
-            qp.save()
+                for i in qmlist:
+                    id_temp=i[0]
+                    qm_ids = qm_ids + id_temp + " "
+                    ques_module_temp = Question_Module.objects.filter(id=id_temp).get()
+                    marks_sum = marks_sum + ques_module_temp.marks
+
+                qp.marks = marks_sum
+                qp.ques_id = ids
+                qp.save()
 
         return redirect('Home:your_paper')
     else:
         form = CountryForm()
         q_list = Questions_Main.objects.filter(username=request.user.username)
+        qm_list = Question_Module.objects.filter(username=request.user.username)
         # print(q_list)
         q_tup = []
+        qm_tup=[]
         for i in q_list:
             x=[i.id,i.tag]
             x=tuple(x)
             q_tup.append(x)
+        for i in qm_list:
+            x=[i.id,i.statement]
+            x=tuple(x)
+            qm_tup.append(x)
         q_tup = tuple(q_tup)
+        qm_tup = tuple(qm_tup)
         # print(request.user.username)
         form.fields["Question_List"].choices = q_tup
+        form.fields["Question_Module_List"].choices = qm_tup
 
     return render(request, 'add_paper.html', {
         'form': form
