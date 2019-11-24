@@ -9,6 +9,7 @@ app_name = 'Home'
 urlpatterns = [
     path('', views.qbList, name='qbList'),
     path('add_qb/', views.add_qb, name='add_qb'),
+    path('single_correct_mcq/<name>', views.SingleCorrectMCQ, name='single_mcq'),
     path('your_paper/', views.your_paper, name='your_paper'),
     path('add_paper/', views.add_paper, name='add_paper'),
     path('detail_qb/<name>/', views.detail_qb, name='detail_qb'),

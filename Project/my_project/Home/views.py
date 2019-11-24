@@ -5,13 +5,35 @@ from django.urls import reverse
 from django.template import RequestContext
 
 from . models import Question_Banks_Main, Questions_Main, created_paper
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, SingleCorrectForm, MCQForm
+from django.forms import formset_factory
+# from django.shortcuts import render
+# from myapp.forms import ArticleForm
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
 # from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
 from .filters import QuestionsFilter
 # Create your views here.
+
+def SingleCorrectMCQ(request, name):
+    ArticleFormSet = formset_factory(SingleCorrectForm, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid():
+            # do something with the cleaned_data on the formsets.
+            pass
+    else:
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'single_correct.html', {
+        'article_formset': article_formset,
+        'book_formset': book_formset,
+    })
+
+
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {

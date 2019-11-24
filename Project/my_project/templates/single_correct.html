@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Single Correct MCQ{% endblock %}
+
+{% block content %}
+<h2>Add your Question here</h2>
+<div class="container">
+        <form method="post">
+            <table>
+                {{ book_formset }}
+            </table>    
+            <br> <br> <br> <br>
+            <table>
+                {{ article_formset }}
+            </table>
+                
+
+            </form>
+</div>
+{% endblock %}
