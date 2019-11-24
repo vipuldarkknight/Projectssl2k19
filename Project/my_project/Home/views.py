@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.template import RequestContext
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
-
+from django.template.loader import get_template
 # from . models import Question_Banks_Main, Questions_Main, created_paper
 # from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, SingleCorrectForm, MCQForm
 from django.forms import formset_factory
@@ -611,7 +611,7 @@ def generate_pdf(request,id):
         cnt=cnt+1
     
     print(ll)
-    
+    # template=get_template('quiz_template.html')
     data = {
          'quesm_list':quesm_list,
          'ques_list':ques_list,
@@ -621,7 +621,9 @@ def generate_pdf(request,id):
          'qm_size': qm_size,
          'll': ll
     }
+    # html=template.render(data)
     pdf = render_to_pdf('quiz_template.html', data)
     if pdf:
         return HttpResponse(pdf, content_type='application/pdf')
+        # return HttpResponse(html)
     return HttpResponse("Not found")    
