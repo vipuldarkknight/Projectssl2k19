@@ -43,6 +43,7 @@ class created_paper(models.Model):
     num_ques_modules=models.IntegerField()
     ques_module_id = models.CharField(max_length=150)
     total_sum_ques = models.IntegerField()
+    duration = models.CharField(max_length=150)
 
     def __str__(self):
         return self.name

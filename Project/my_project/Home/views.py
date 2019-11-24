@@ -30,6 +30,7 @@ def add_paper(request):
         qlist = request.POST.getlist('Question_List')
         qmlist = request.POST.getlist('Question_Module_List')
         qp_name = request.POST.get('QP_name')
+        qp_duration = request.POST.get('Duration')
         # if form.is_valid():
             # qpaper = form.save(commit=False)
             # qpaper.username = request.user.username
@@ -51,6 +52,7 @@ def add_paper(request):
                 qp.username = request.user.username
                 qp.num_ques = len(qlist)
                 qp.num_ques_modules = len(qmlist)
+                qp.duration = qp_duration
 
                 ids = ""
                 qm_ids=""
