@@ -1,11 +1,13 @@
 from itertools import chain
+
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.template import RequestContext
 from django.core.files.storage import FileSystemStorage
 from django.template.loader import render_to_string
-
+from django.template.loader import get_template
 # from . models import Question_Banks_Main, Questions_Main, created_paper
 # from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, SingleCorrectForm, MCQForm
 from django.forms import formset_factory
@@ -21,9 +23,12 @@ from .filters import QuestionsFilter, SubQuestionsFilter
 from django.http import HttpResponse
 from django.views.generic import View
 from .utils import render_to_pdf
+import os
+from django.contrib import messages
 
 # Create your views here.
 
+@login_required
 def SingleCorrectMCQ(request, name):
     ArticleFormSet = formset_factory(SingleCorrectForm, extra=2, max_num=1)
     BookFormSet = formset_factory(MCQForm)
@@ -66,7 +71,6 @@ def SingleCorrectMCQ(request, name):
             q.save()
 
             return redirect('Home:detail_qb', name=name)            
-
     else:
         article_formset = ArticleFormSet(prefix='articles')
         book_formset = BookFormSet(prefix='books')
@@ -75,6 +79,7 @@ def SingleCorrectMCQ(request, name):
         'book_formset': book_formset,
     })
 
+@login_required
 def MultiCorrectMCQ(request, name):
     ArticleFormSet = formset_factory(MultiCorrectForm, extra=2, max_num=1)
     BookFormSet = formset_factory(MCQForm)
@@ -126,6 +131,7 @@ def MultiCorrectMCQ(request, name):
         'book_formset': book_formset,
     })
 
+@login_required
 def matchthecolumns(request, name):
     ArticleFormSet = formset_factory(MatchtheColumnForm, extra=2, max_num=1)
     ArticleFormSet1 = formset_factory(MatchtheColumn2Form, extra=2, max_num=1)
@@ -193,19 +199,20 @@ def matchthecolumns(request, name):
         'book_formset': book_formset,
     })
 
-
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {
         'qb_list': qb_list
     })
 
+@login_required
 def your_paper(request):
     paper_list = created_paper.objects.filter(username=request.user.username)
     return render(request, 'see_ques.html', {
         'paper_list': paper_list
     })
 
+@login_required
 def add_paper(request):
     if request.method == 'POST':
         form = CountryForm(request.POST)
@@ -260,7 +267,13 @@ def add_paper(request):
                 qp.ques_module_id = qm_ids
                 qp.save()
 
-        return redirect('Home:your_paper')
+                return redirect('Home:your_paper')
+            else:
+                messages.add_message(request, messages.INFO, 'Questions cannot be empty')
+                return redirect('Home:add_paper')
+        else:
+            messages.add_message(request, messages.INFO, 'Same Name Paper Already Exists')
+            return redirect('Home:add_paper')
     else:
         form = CountryForm()
         q_list = Questions_Main.objects.filter(username=request.user.username)
@@ -269,7 +282,7 @@ def add_paper(request):
         q_tup = []
         qm_tup=[]
         for i in q_list:
-            x=[i.id,i.tag]
+            x=[i.id,i.statement[:100]]
             x=tuple(x)
             q_tup.append(x)
         for i in qm_list:
@@ -286,11 +299,20 @@ def add_paper(request):
         'form': form
     })
 
+@login_required
 def add_qb(request):
     if request.method == 'POST':
         form = QuestionBankForm(request.POST, request.FILES)
+        qb_list = Question_Banks_Main.objects.filter(username=request.user.username)
         if form.is_valid():
+
             qb = form.save(commit=False)
+
+            for x in qb_list:
+                if qb.name == x.name:
+                    messages.add_message(request, messages.INFO, 'Same Name Question Bank Already Exists')
+                    return redirect('Home:add_qb')
+
             qb.username = request.user.username
             qb.save()
             return redirect('Home:qbList')
@@ -301,12 +323,13 @@ def add_qb(request):
         'form': form
     })
 
+@login_required
 def add_ques(request, name):
     return render(request, 'add_ques.html', {
         'name': name
     })
 
-
+@login_required
 def add_ques_manually(request, name):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -326,6 +349,7 @@ def add_ques_manually(request, name):
         'form': form
     })
 
+@login_required
 def edit_ques(request, id):
     ques_instance = Questions_Main.objects.get(id=id)
 
@@ -347,7 +371,7 @@ def edit_ques(request, id):
             'form': form
         })
 
-
+@login_required
 def detail_qb(request, name):
     qb_detail_list = Question_Banks_Main.objects.filter(username=request.user.username, name=name)[1:]
     ques_list = Questions_Main.objects.filter(username=request.user.username, qb_name=name)
@@ -361,6 +385,8 @@ def detail_qb(request, name):
         'ques_module_list': ques_module_list
     })
 
+
+@login_required
 def view_ques(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
     if(ques.qtype == 4):
@@ -370,13 +396,14 @@ def view_ques(request,id):
         return render (request, 'view_ques.html',{'ques':ques,'id':id, 'lst': lst})    
     return render (request, 'view_ques.html',{'ques':ques,'id':id})   
     
-
+@login_required
 def view_ans(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
     return render (request, 'view_ans.html',{'ques':ques,'id':id})
 
 ques_form_list = []
 
+@login_required
 def upload_qbfile(request, name):
     if request.method == 'POST':
         form = QuestionBankForm2(request.POST, request.FILES)
@@ -417,6 +444,7 @@ def upload_qbfile(request, name):
         'form': form
     })
 
+@login_required
 def add_ques_by_file(request, name):
     global ques_form_list
     if request.method == 'POST':
@@ -443,11 +471,12 @@ def add_ques_by_file(request, name):
 
     return redirect('Home:detail_qb', name=name)
 
-
+@login_required
 def delete_qb(request, name):
     Question_Banks_Main.objects.filter(name=name).delete()
     return redirect('Home:qbList')
 
+@login_required
 def paper_detail(request, name):
     paper_instance = created_paper.objects.filter(username=request.user.username, name=name).get()
     ques_id_list = paper_instance.ques_id.split()
@@ -466,6 +495,7 @@ def paper_detail(request, name):
 
 no_of_subquestions=0
 
+@login_required
 def add_ques_module(request, name):
     if request.method == 'POST':
         form = QuestionModuleForm(request.POST)
@@ -490,6 +520,7 @@ def add_ques_module(request, name):
         'form': form
     })
 
+@login_required
 def add_subques(request, id):
 
     global no_of_subquestions
@@ -523,6 +554,7 @@ def add_subques(request, id):
     name = ques_module.qb_name
     return redirect('Home:detail_qb', name=name)
 
+@login_required
 def ques_module_detail(request, id):
     ques_list = SubQuestions.objects.filter(question_module_id=id)
     filter=SubQuestionsFilter(request.GET,queryset=ques_list)
@@ -535,16 +567,17 @@ def ques_module_detail(request, id):
         'ques_module': ques_module
     })
 
-
+@login_required
 def view_subques(request, id):
     ques = SubQuestions.objects.filter(id=id).get()
     return render(request, 'view_ques.html', {'ques': ques, 'id': id})
 
-
+@login_required
 def view_subans(request, id):
     ques = SubQuestions.objects.filter(id=id).get()
     return render(request, 'view_ans.html', {'ques': ques, 'id': id})
 
+@login_required
 def edit_subques(request, id):
     ques_instance = SubQuestions.objects.get(id=id)
 
@@ -603,8 +636,8 @@ def qsplit(qfile):
         ql=ql+[dic]
     return ql
 
-def generate_pdf(request,id):
-    paper_instance = created_paper.objects.get(id=id)
+def tex_pdf(id):
+    paper_instance= created_paper.objects.get(id=id)
     ques_id_list = paper_instance.ques_id.split()
     ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
     quesm_id_list = paper_instance.ques_module_id.split()
@@ -620,19 +653,104 @@ def generate_pdf(request,id):
         subques_temp = SubQuestions.objects.filter(question_module_id=i.id)
         ll.append((cnt,subques_temp))
         cnt=cnt+1
-    
-    print(ll)
-    
-    data = {
-         'quesm_list':quesm_list,
-         'ques_list':ques_list,
-         'paper':paper_instance,
-         'comb_list':comb_list,
-         'comb_list2':comb_list2,
-         'qm_size': qm_size,
-         'll': ll
-    }
-    pdf = render_to_pdf('quiz_template.html', data)
-    if pdf:
-        return HttpResponse(pdf, content_type='application/pdf')
-    return HttpResponse("Not found")    
+    with open('media/quiz.tex', 'w+') as fn:
+        fn.write("\\documentclass[12pt]{article}\n")
+        fn.write("\\usepackage[a4paper,bottom=0.6in,left=0.75in,right=0.75in,top=0.6in]{geometry}\n")
+        fn.write("\\usepackage{seqsplit}\n")
+        fn.write("\\usepackage{amsmath}\n")
+        fn.write("\\usepackage{fancyhdr}\n")
+        fn.write("\\pagestyle{fancy}\n")
+        fn.write("\\lhead{Name \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ } \n")
+        fn.write("\\rhead{Roll No. \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_} \n")
+        fn.write("\\renewcommand{\\headrulewidth}{0.4pt} \n")
+        fn.write("\\usepackage{pgf} \n")
+        fn.write("\\usepackage{pgfpages} \n")
+        fn.write("\\usepackage{graphicx}\n")
+        fn.write("\\pgfpagesdeclarelayout{boxed}{ \\edef\\pgfpageoptionborder{3pt} } {\n")
+        fn.write("\\pgfpagesphysicalpageoptions \n")
+        fn.write("{ \n")
+        fn.write(" logical pages=1,% \n")
+        fn.write("} \n")
+        fn.write("\\pgfpageslogicalpageoptions{1}{ \n")
+        fn.write(" border code=\\pgfsetlinewidth{2pt}\\pgfstroke,% \n")
+        fn.write("border shrink=\\pgfpageoptionborder, \n")
+        fn.write("resized width=.90\\pgfphysicalwidth,\n")
+        fn.write("resized height=.90\\pgfphysicalheight, \n")
+        fn.write("center=\\pgfpoint{.5\\pgfphysicalwidth}{.5\\pgfphysicalheight} }} \n")
+        fn.write("\\pgfpagesuselayout{boxed} \n")
+        fn.write("\\begin{document}\n")
+        fn.write("\\vspace*{2cm}\n")
+        fn.write("\\begin{center}\n")
+        fn.write("{\\Huge "+paper_instance.name+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("{\\Huge Duration : "+paper_instance.duration+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("{\\Huge Marks : "+str(paper_instance.marks)+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("\\resizebox{1\\textwidth}{!}{% \n")
+        fn.write("\\begin{tabular}{|c|c|c|}\n")
+        fn.write("\\hline ")
+        fn.write("Question No. & Maximum marks & Marks Obtained \\"+"\\ \n")
+        fn.write("\\hline ")
+        j=1
+        for ques in comb_list:
+            fn.write(str(j)+"&"+str(ques.marks)+"&"+" "+" \\"+"\\ \n")
+            fn.write("\\hline ")
+            j=j+1
+        fn.write("\\end{tabular} }\n")
+        fn.write("\\pagebreak \n")
+        fn.write("\\end{center}\n")
+        fn.write("\\begin{enumerate}\n")
+        for ques in ques_list:
+            if(ques.qtype==1):
+                fn.write("\\item "+"{\\large "+ques.statement+"}\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{"+str(1.5*ques.marks)+"cm}\n")
+            elif(ques.qtype==2):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{2cm}\n")
+            elif(ques.qtype==3):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{2cm}\n")
+                # fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+ ques.statement+"} \n")
+            elif(ques.qtype==4):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large "+lst[0]+"}\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]} \\"+"\\ "+"\\"+"\\ \n")
+                fn.write("\\resizebox{0.50\\textwidth}{!}{% \n")
+                fn.write("\\begin{tabular}{|c|c|}\n")
+                fn.write("\\hline ")
+                for i in range(1,5):
+                    fn.write(lst[i]+"&"+lst[i+4]+" \\"+"\\ \n")
+                    fn.write("\\hline ")
+                fn.write("\\end{tabular} }\n")
+                fn.write("\\vspace*{2cm}\n")     
+            
+        for quesm in quesm_list:
+            fn.write("\\item "+"{\\large "+quesm.statement+"}\n")
+            fn.write("\\hspace*{\\fill}{\\large ["+str(quesm.marks)+" marks]}")
+            subques_list = SubQuestions.objects.filter(question_module_id=quesm.id)
+            fn.write("\\begin{enumerate}\n")
+            for subques in subques_list:
+                    fn.write("\\item "+"{\\large "+subques.statement+"}\n")
+                    fn.write("\\hspace*{\\fill}{\\large ["+str(subques.marks)+" marks]}")
+                    fn.write("\\vspace*{"+str(1.5*subques.marks)+"cm}\n")
+            fn.write("\\end{enumerate}\n")            
+        fn.write("\\end{enumerate}\n")
+        fn.write("\\pagebreak")
+        fn.write("{\\Huge Scratch Space}")
+        fn.write("\\end{document}\n")    
+    os.system("pdflatex -output-directory media media/quiz.tex")
+
+
+def generate_pdf(request,id):
+    tex_pdf(id)
+    with open('media/quiz.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'filename=some_file.pdf'
+        return response
+    pdf.closed    
