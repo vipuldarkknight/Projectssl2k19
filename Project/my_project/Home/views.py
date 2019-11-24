@@ -21,6 +21,8 @@ from .filters import QuestionsFilter, SubQuestionsFilter
 from django.http import HttpResponse
 from django.views.generic import View
 from .utils import render_to_pdf
+import os
+
 
 # Create your views here.
 
@@ -595,8 +597,8 @@ def qsplit(qfile):
         ql=ql+[dic]
     return ql
 
-def generate_pdf(request,id):
-    paper_instance = created_paper.objects.get(id=id)
+def tex_pdf(id):
+    paper_instance= created_paper.objects.get(id=id)
     ques_id_list = paper_instance.ques_id.split()
     ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
     quesm_id_list = paper_instance.ques_module_id.split()
@@ -612,21 +614,104 @@ def generate_pdf(request,id):
         subques_temp = SubQuestions.objects.filter(question_module_id=i.id)
         ll.append((cnt,subques_temp))
         cnt=cnt+1
-    
-    print(ll)
-    # template=get_template('quiz_template.html')
-    data = {
-         'quesm_list':quesm_list,
-         'ques_list':ques_list,
-         'paper':paper_instance,
-         'comb_list':comb_list,
-         'comb_list2':comb_list2,
-         'qm_size': qm_size,
-         'll': ll
-    }
-    # html=template.render(data)
-    pdf = render_to_pdf('quiz_template.html', data)
-    if pdf:
-        return HttpResponse(pdf, content_type='application/pdf')
-        # return HttpResponse(html)
-    return HttpResponse("Not found")    
+    with open('media/quiz.tex', 'w+') as fn:
+        fn.write("\\documentclass[12pt]{article}\n")
+        fn.write("\\usepackage[a4paper,bottom=0.6in,left=0.75in,right=0.75in,top=0.6in]{geometry}\n")
+        fn.write("\\usepackage{seqsplit}\n")
+        fn.write("\\usepackage{amsmath}\n")
+        fn.write("\\usepackage{fancyhdr}\n")
+        fn.write("\\pagestyle{fancy}\n")
+        fn.write("\\lhead{Name \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_ } \n")
+        fn.write("\\rhead{Roll No. \\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_\\_} \n")
+        fn.write("\\renewcommand{\\headrulewidth}{0.4pt} \n")
+        fn.write("\\usepackage{pgf} \n")
+        fn.write("\\usepackage{pgfpages} \n")
+        fn.write("\\usepackage{graphicx}\n")
+        fn.write("\\pgfpagesdeclarelayout{boxed}{ \\edef\\pgfpageoptionborder{3pt} } {\n")
+        fn.write("\\pgfpagesphysicalpageoptions \n")
+        fn.write("{ \n")
+        fn.write(" logical pages=1,% \n")
+        fn.write("} \n")
+        fn.write("\\pgfpageslogicalpageoptions{1}{ \n")
+        fn.write(" border code=\\pgfsetlinewidth{2pt}\\pgfstroke,% \n")
+        fn.write("border shrink=\\pgfpageoptionborder, \n")
+        fn.write("resized width=.90\\pgfphysicalwidth,\n")
+        fn.write("resized height=.90\\pgfphysicalheight, \n")
+        fn.write("center=\\pgfpoint{.5\\pgfphysicalwidth}{.5\\pgfphysicalheight} }} \n")
+        fn.write("\\pgfpagesuselayout{boxed} \n")
+        fn.write("\\begin{document}\n")
+        fn.write("\\vspace*{2cm}\n")
+        fn.write("\\begin{center}\n")
+        fn.write("{\\Huge "+paper_instance.name+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("{\\Huge Duration : "+paper_instance.duration+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("{\\Huge Marks : "+str(paper_instance.marks)+"}\\"+"\\ \n")
+        fn.write("\\vspace*{1cm}\n")
+        fn.write("\\resizebox{1\\textwidth}{!}{% \n")
+        fn.write("\\begin{tabular}{|c|c|c|}\n")
+        fn.write("\\hline ")
+        fn.write("Question No. & Maximum marks & Marks Obtained \\"+"\\ \n")
+        fn.write("\\hline ")
+        j=1
+        for ques in comb_list:
+            fn.write(str(j)+"&"+str(ques.marks)+"&"+" "+" \\"+"\\ \n")
+            fn.write("\\hline ")
+            j=j+1
+        fn.write("\\end{tabular} }\n")
+        fn.write("\\pagebreak \n")
+        fn.write("\\end{center}\n")
+        fn.write("\\begin{enumerate}\n")
+        for ques in ques_list:
+            if(ques.qtype==1):
+                fn.write("\\item "+"{\\large "+ques.statement+"}\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{"+str(1.5*ques.marks)+"cm}\n")
+            elif(ques.qtype==2):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{2cm}\n")
+            elif(ques.qtype==3):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\vspace*{2cm}\n")
+                # fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+ ques.statement+"} \n")
+            elif(ques.qtype==4):
+                lst=ques.statement.split('\n')
+                fn.write("\\item "+"{\\large "+lst[0]+"}\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]} \\"+"\\ "+"\\"+"\\ \n")
+                fn.write("\\resizebox{0.50\\textwidth}{!}{% \n")
+                fn.write("\\begin{tabular}{|c|c|}\n")
+                fn.write("\\hline ")
+                for i in range(1,5):
+                    fn.write(lst[i]+"&"+lst[i+4]+" \\"+"\\ \n")
+                    fn.write("\\hline ")
+                fn.write("\\end{tabular} }\n")
+                fn.write("\\vspace*{2cm}\n")     
+            
+        for quesm in quesm_list:
+            fn.write("\\item "+"{\\large "+quesm.statement+"}\n")
+            fn.write("\\hspace*{\\fill}{\\large ["+str(quesm.marks)+" marks]}")
+            subques_list = SubQuestions.objects.filter(question_module_id=quesm.id)
+            fn.write("\\begin{enumerate}\n")
+            for subques in subques_list:
+                    fn.write("\\item "+"{\\large "+subques.statement+"}\n")
+                    fn.write("\\hspace*{\\fill}{\\large ["+str(subques.marks)+" marks]}")
+                    fn.write("\\vspace*{"+str(1.5*subques.marks)+"cm}\n")
+            fn.write("\\end{enumerate}\n")            
+        fn.write("\\end{enumerate}\n")
+        fn.write("\\pagebreak")
+        fn.write("{\\Huge Scratch Space}")
+        fn.write("\\end{document}\n")    
+    os.system("pdflatex -output-directory media media/quiz.tex")
+
+
+def generate_pdf(request,id):
+    tex_pdf(id)
+    with open('media/quiz.pdf', 'rb') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'filename=some_file.pdf'
+        return response
+    pdf.closed    
