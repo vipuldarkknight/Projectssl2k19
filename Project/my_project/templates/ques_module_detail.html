@@ -3,40 +3,48 @@
 {% block title %}Detail{% endblock %}
 
 {% block content %}
-  <h2>Paper Details</h2>
-
-    <h4>{{ paper.name }}</h4>
-    <h4>Marks: {{ paper.marks }}</h4>
-    <h4>{{ paper.num_ques }} Questions</h4>
+  <h2>Question Module Details</h2>
 
 <span>
      <button><a href="{% url 'Home:qbList' %}">Home</a></button>
  </span>
+
+<span>
+     <button><a href="{% url 'Home:detail_qb' name=qb_name %}">Back To Question Bank Details</a></button>
+ </span>
+
+<h3>{{ ques_module.statement }}</h3>
+<h3>{{ ques_module.marks }}</h3>
+
 
 <form method="GET">
 {{ filter.form.as_p }}
 <button type="submit">Search</button>
 </form>
 <br><br>
+<h2>QUESTIONS</h2>
 <div class="container">
-<table class="users" style="width: 100%">
+<table class="userss" style="width: 100%">
     <tr>
         <th class="stat">statement</th>
         <th class="ans">answer</th>
         <th class="tag">tag</th>
         <th class="marks">marks</th>
         <th class="diff">difficulty</th>
+        <th class="ed">edit</th>
     </tr>
     {% for ques in filter.qs %}
-    <tr> 
-        <td><div><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td><div><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
+    <tr>
+        <td><div><a href="{% url 'Home:view_subques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td><div><a href="{% url 'Home:view_subans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
         <td>{{ ques.tag }}</td>
         <td>{{ ques.marks }}</td>
         <td>{{ ques.difficulty }}</td>
+        <td align="center"><button><a href="{% url 'Home:edit_subques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>
 </div>
+
 
 {% endblock %}
