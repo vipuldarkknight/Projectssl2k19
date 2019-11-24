@@ -3,7 +3,10 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.template import RequestContext
-
+from django.core.files.storage import FileSystemStorage
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 from . models import Question_Banks_Main, Questions_Main, created_paper
 from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm
 
@@ -273,3 +276,17 @@ def qsplit(qfile):
         ql=ql+[dic]
     return ql
 
+def html_to_pdf_view(request):
+    paragraphs = ['first paragraph', 'second paragraph', 'third paragraph']
+    html_string = render_to_string('quiz_template.html', {'paragraphs': paragraphs})
+
+    html = HTML(string=html_string)
+    html.write_pdf(target='/tmp/mypdf.pdf');
+
+    fs = FileSystemStorage('/tmp')
+    with fs.open('mypdf.pdf') as pdf:
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="mypdf.pdf"'
+        return response
+
+    return response
