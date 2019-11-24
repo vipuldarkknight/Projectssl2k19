@@ -3,10 +3,10 @@
 {% block title %}Add{% endblock %}
 
 {% block content %}
-  <h2>Add Question Module</h2>
+  <h2><em>Add Question Module</em></h2>
  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-     <button type="submit">Upload</button>
+     <button class="button button 7" type="submit"><em>Next</em></button>
   </form>
 {% endblock %}

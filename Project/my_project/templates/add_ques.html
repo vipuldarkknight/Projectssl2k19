@@ -3,24 +3,28 @@
 {% block title %}Add Questions here{% endblock %}
 
 {% block content %}
-  <h2>Details</h2>
+  <h2><em>Select Question Type</em></h2>
 
   
  
  <span>
-        <button><a href="{% url 'Home:add_ques_manually' name=name %}">Descriptive</a></button>
+        <button class="button button1"><a href="{% url 'Home:add_ques_manually' name=name %}"><em>Descriptive</em></a></button>
  </span>
+ 
+
  <span>
-        <button><a href="{% url 'Home:single_mcq' name=name %}">Single_Choice_MCQ</a></button>
+        <button class="button button1"><a href="{% url 'Home:single_mcq' name=name %}"><em>Single Choice MCQ</em></a></button>
  </span>
+ 
  <span>
-        <button><a href="{% url 'Home:multicorrect_mcq' name=name %}">Multi_Correct_MCQ</a></button>
+        <button class="button button1"><a href="{% url 'Home:multicorrect_mcq' name=name %}"><em>Multi Correct MCQ</em></a></button>
  </span>
+ 
  <span>
-        <button><a href="{% url 'Home:matchingtype' name=name %}">Match The Columns</a></button>
+        <button class="button button1"><a href="{% url 'Home:matchingtype' name=name %}"><em>Match The Columns</em></a></button>
  </span>
 <br>
  <span style="text-align:center">
-     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+     <button class="button button1"><a href="{% url 'Home:qbList' %}"><em>Go To Home</em></a></button>
  </span>
 {% endblock %}

@@ -31,6 +31,10 @@ class CountryForm(forms.Form):
 
 class SingleCorrectForm(forms.Form):
 
+    def __init__(self,*arg, **kwargs):
+        super(SingleCorrectForm,self).__init__(*arg,**kwargs)
+        self.empty_permitted = False
+    
     ANSWER_CHOICES = [
         ("", 'Select'),
         ("A", 'Choice1'),
@@ -39,13 +43,18 @@ class SingleCorrectForm(forms.Form):
         ("D", 'Choice4'),
     ]
 
-    Choice1 = forms.CharField()
+    Choice1 = forms.CharField(required=True)
     Choice2 = forms.CharField()
     Choice3 = forms.CharField()
     Choice4 = forms.CharField()
     Answer = forms.CharField(label="Answer",widget=forms.Select(choices=ANSWER_CHOICES ), required = False)
 
 class MatchtheColumnForm(forms.Form):
+
+    def __init__(self,*arg, **kwargs):
+        super(MatchtheColumnForm,self).__init__(*arg,**kwargs)
+        self.empty_permitted = False
+    
 
     ANSWER_CHOICES = [
         ("", 'Select'),
@@ -66,6 +75,10 @@ class MatchtheColumnForm(forms.Form):
 
 class MatchtheColumn2Form(forms.Form):
 
+    def __init__(self,*arg, **kwargs):
+        super(MatchtheColumn2Form,self).__init__(*arg,**kwargs)
+        self.empty_permitted = False
+    
     A = forms.CharField()
     B = forms.CharField()
     C = forms.CharField()
@@ -74,6 +87,11 @@ class MatchtheColumn2Form(forms.Form):
 
 
 class MultiCorrectForm(forms.Form):
+    def __init__(self,*arg, **kwargs):
+        super(MultiCorrectForm,self).__init__(*arg,**kwargs)
+        self.empty_permitted = False
+    
+    
     OPTION = (
         ("a", "Choice1"),
         ("b", "Choice2"),

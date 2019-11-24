@@ -30,6 +30,7 @@ def SingleCorrectMCQ(request, name):
     if request.method == 'POST':
         article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
         book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        print(book_formset.is_valid())
         if article_formset.is_valid() and book_formset.is_valid():
             # do something with the cleaned_data on the formsets.
 
@@ -41,14 +42,15 @@ def SingleCorrectMCQ(request, name):
                 qtag = data['tag']
 
                 statement_final = ""
-                statement_final = statement_final + qstatement + "\n"
-
+                statement_final = statement_final + qstatement + "\n" + "\n"
+            
+        
             for data in article_formset.cleaned_data:
 
-                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
-                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
-                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
-                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+                statement_final = statement_final + "  A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "  B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "  C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "  D) " + data['Choice4'] + "\n"
 
                 qans = data['Answer']
 
@@ -89,14 +91,14 @@ def MultiCorrectMCQ(request, name):
                 qtag = data['tag']
 
                 statement_final = ""
-                statement_final = statement_final + qstatement + "\n"
+                statement_final = statement_final + qstatement + "\n" + "\n"
 
             for data in article_formset.cleaned_data:
 
-                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
-                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
-                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
-                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+                statement_final = statement_final + "  A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "  B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "  C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "  D) " + data['Choice4'] + "\n"
 
                 qans = data['Choose_Answers']
                 qans_string = ""
@@ -358,8 +360,14 @@ def detail_qb(request, name):
         'qb_name': name,
         'ques_module_list': ques_module_list
     })
+
 def view_ques(request,id):
     ques=Questions_Main.objects.filter(id=id).get()
+    if(ques.qtype == 4):
+        stat = ques.statement
+        # print(stat)
+        lst = stat.split('\n')
+        return render (request, 'view_ques.html',{'ques':ques,'id':id, 'lst': lst})    
     return render (request, 'view_ques.html',{'ques':ques,'id':id})   
     
 

@@ -3,5 +3,59 @@
 {% block title %}Detail{% endblock %}
 
 {% block content %}
-<p style="white-space: pre-line"> {{ ques.statement }} </p>
+
+<h1 style="text-align:center"> Question Description </h1>
+<br>
+<div style="background-color: black; color:white; padding: 10px 10px 10px 10px">
+    {% if ques.qtype == 1 %}
+    <span > Type -->  Descriptive Type Question </span> <br>
+    {% endif %}
+
+    {% if ques.qtype == 2 %}
+    <span > Type -->  Single Correct MCQ Type Question </span> <br>
+    {% endif %}
+
+    {% if ques.qtype == 3 %}
+    <span > Type -->  Multi Correct MCQ Type Question </span> <br>
+    {% endif %}
+
+    {% if ques.qtype == 4 %}
+    <span > Type -->  Match the Column Type Question </span> <br>
+    {% endif %}
+    <span > Tag -->  {{ ques.tag }} </span> <br>
+    <span > ({{ ques.marks }} Marks) </span>
+</div>
+
+{% if ques.qtype == 4 %}
+    <p style="white-space: pre-line"> Ques)  {{ lst.0 }} </p>
+    <table style="padding: 15px; width:50% ">
+        <caption>Match Entries from Column1 to Column2 (Single Matching for each Entry) </caption>
+        <!-- <br> -->
+        <tr>
+            <th style="text-align:center; padding: 10px"> Column 1 </th>
+            <th style="text-align:center; padding: 10px"> Column 2 </th>
+        </tr>
+        <tr>
+            <td style="padding: 10px"> {{ lst.1 }} </td>
+            <td style="padding: 10px"> {{ lst.5 }} </td>
+        <tr>
+        <tr>
+            <td style="padding: 10px"> {{ lst.2 }} </td>
+            <td style="padding: 10px"> {{ lst.6 }} </td>
+        <tr>
+        <tr>
+            <td style="padding: 10px"> {{ lst.3 }} </td>
+            <td style="padding: 10px"> {{ lst.7 }} </td>
+        <tr>
+        <tr>
+            <td style="padding: 10px"> {{ lst.4 }} </td>
+            <td style="padding: 10px"> {{ lst.8 }} </td>
+        <tr>
+    </table>
+
+{% else %}
+    <p style="white-space: pre-line"> Ques)  {{ ques.statement }} </p>
+{% endif %}
+
+
 {% endblock %}

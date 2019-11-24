@@ -3,44 +3,50 @@
 {% block title %}Detail{% endblock %}
 
 {% block content %}
-  <h2>Question Module Details</h2>
+  <h2 style="text-align:center"><em>Question Module Details</em></h2>
 
 <span>
-     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+     <button class="button button1"><a href="{% url 'Home:qbList' %}"><em>Go To Home</em></a></button>
  </span>
 
 <span>
-     <button><a href="{% url 'Home:detail_qb' name=qb_name %}">Back To Question Bank Details</a></button>
+     <button class="button button1"><a href="{% url 'Home:detail_qb' name=qb_name %}"><em>Back To Question Bank Details</em></a></button>
  </span>
 
-<h3>{{ ques_module.statement }}</h3>
-<h3>{{ ques_module.marks }}</h3>
-
+<br>
+<h3><em>Statement: {{ ques_module.statement }}</em></h3>
+<h3><em>Total Marks: {{ ques_module.marks }}</em></h3>
+<br>
 
 <form method="GET">
+<div style="text-align:center">
+    <button class="buttonbase button3" type="submit"><em>Search</em></button>
+</div>
+<br>
 {{ filter.form.as_p }}
-<button type="submit">Search</button>
+
 </form>
-<br><br>
-<h2>QUESTIONS</h2>
+
+<br>
+<h2 style="text-align:center"><em>QUESTIONS</em></h2>
 <div class="container">
-<table class="userss" style="width: 100%">
+<table style="width: 100%">
     <tr>
-        <th class="stat">statement</th>
-        <th class="ans">answer</th>
-        <th class="tag">tag</th>
-        <th class="marks">marks</th>
-        <th class="diff">difficulty</th>
-        <th class="ed">edit</th>
+        <th class="stat" style="padding: 15px"><em>Statement</em></th>
+        <th class="ans" style="padding: 15px"><em>Answer</em></th>
+        <th class="tag" style="padding: 15px"><em>Tag</em></th>
+        <th class="marks" style="padding: 15px"><em>Marks</em></th>
+        <th class="diff" style="padding: 15px"><em>Difficulty</em></th>
+        <th class="ed" style="padding: 15px"><em>Edit</em></th>
     </tr>
     {% for ques in filter.qs %}
     <tr>
-        <td><div><a href="{% url 'Home:view_subques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td><div><a href="{% url 'Home:view_subans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
-        <td>{{ ques.tag }}</td>
-        <td>{{ ques.marks }}</td>
-        <td>{{ ques.difficulty }}</td>
-        <td align="center"><button><a href="{% url 'Home:edit_subques' id=ques.id %}">Edit</a></button></td>
+        <td style="padding: 7px"><div><a class="four" href="{% url 'Home:view_subques' id=ques.id %}" target="_blank"><em>{{ ques.statement }}</em></a></div></td>
+        <td style="padding: 7px"><div><a class="four" href="{% url 'Home:view_subans' id=ques.id %}" target="_blank"><em>{{ ques.answer }}</em></a></div></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.tag }}</em></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.marks }}</em></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.difficulty }}</em></td>
+        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_subques' id=ques.id %}"><em>Edit</em></a></button></td>
     </tr>
     {% endfor %}
 </table>

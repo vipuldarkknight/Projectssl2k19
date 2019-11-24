@@ -3,66 +3,71 @@
 {% block title %}Detail{% endblock %}
 
 {% block content %}
-  <h2>Details</h2>
+  <h1 style="text-align:center"><em>Question Bank Details</em></h1>
 
 <span>
-     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+     <button class="button button1"><a href="{% url 'Home:qbList' %}"><em>Go To Home</em></a></button>
  </span>
 
  <span>
-     <button><a href="{% url 'Home:upload_qbfile' name=qb_name %}">Add File</a></button>
+     <button class="button button1"><a href="{% url 'Home:upload_qbfile' name=qb_name %}"><em>Add Question via File</em></a></button>
  </span>
 
  <span>
-     <button><a href="{% url 'Home:add_ques' name=qb_name %}">Add Question Manually</a></button>
+     <button class="button button1"><a href="{% url 'Home:add_ques' name=qb_name %}"><em>Add Question Manually</em></a></button>
  </span>
 
  <span>
-     <button><a href="{% url 'Home:add_ques_module' name=qb_name %}">Add a Question Module</a></button>
+     <button class="button button1"><a href="{% url 'Home:add_ques_module' name=qb_name %}"><em>Add a Question Module</em></a></button>
  </span>
 
  <span>
-     <button><a href="{% url 'Home:delete_qb' name=qb_name %}">Delete this Question Bank</a></button>
+     <button class="button button1"><a href="{% url 'Home:delete_qb' name=qb_name %}"><em>Delete this Question Bank</em></a></button>
  </span>
  <!-- <span>
         <button><a href="{% url 'Home:single_mcq' name=qb_name %}">Single_Choice_MCQ</a></button>
  </span> -->
 
 
-
+<br><br><br><br>
 <form method="GET">
+<div style="text-align:center">
+    <button class="buttonbase button3" type="submit"><em>Search<em></button>
+</div>
+<br>
 {{ filter.form.as_p }}
-<button type="submit">Search</button>
+
 </form>
 <br><br>
-<h2>QUESTIONS</h2>
+<h2 style="text-align:center"><em>QUESTIONS</em></h2>
 <div class="container">
-<table class="userss" style="width: 100%">
+<table style="width: 100%">
     <tr>
-        <th class="stat">statement</th>
-        <th class="ans">answer</th>
-        <th class="tag">tag</th>
-        <th class="marks">marks</th>
-        <th class="diff">difficulty</th>
-        <th class="ed">edit</th>
+        <th class="stat" style="padding: 15px"><em>Statement</em></th>
+        <th class="ans" style="padding: 15px"><em>Answer</em></th>
+        <th class="tag" style="padding: 15px"><em>Tag</em></th>
+        <th class="marks" style="padding: 15px"><em>Marks</em></th>
+        <th class="diff" style="padding: 15px"><em>Difficulty</em></th>
+        <th class="ed" style="padding: 15px"><em>Edit</em></th>
     </tr>
     {% for ques in filter.qs %}
     <tr> 
-        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
-        <td>{{ ques.tag }}</td>
-        <td>{{ ques.marks }}</td>
-        <td>{{ ques.difficulty }}</td>
-        <td align="center"><button><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
+        <td style="padding: 7px"><div style="white-space: pre-line"><a class="four" href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td style="padding: 7px"><div style="white-space: pre-line"><a class="four" href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
+        <td style="padding: 7px; text-align:center">{{ ques.tag }}</td>
+        <td style="padding: 7px; text-align:center">{{ ques.marks }}</td>
+        <td style="padding: 7px; text-align:center">{{ ques.difficulty }}</td>
+        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_ques' id=ques.id %}"><em>Edit</em></a></button></td>
     </tr>
     {% endfor %}
 </table>
 </div>
 
-<h2>QUESTION MODULES</h2>
+<br>
+<h2 style="text-align:center"><em>QUESTION MODULES</em></h2>
 
 {% for qm in ques_module_list %}
-    <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
+    <p><a class="four" href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
 {% endfor %}
 
 {% endblock %}

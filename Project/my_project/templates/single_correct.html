@@ -3,7 +3,7 @@
 {% block title %}Single Correct MCQ{% endblock %}
 
 {% block content %}
-<h2>Add Single_correct MCQ's here</h2>
+<h2><em>Add Single Correct MCQ's here</em></h2>
 <div class="container">
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
@@ -15,8 +15,8 @@
                 {{ article_formset }}
             </table>
             <br>
-            <button type="submit">Upload</button>     
+            <button class="button button7" type="submit"><em>Upload</em></button>     
 
-            </form>
+        </form>
 </div>
 {% endblock %}

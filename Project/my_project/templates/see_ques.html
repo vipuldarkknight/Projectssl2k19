@@ -2,26 +2,32 @@
 {% block title %}See_ques{% endblock %}
 
 {% block content %}
-  <h2>Question-PapersList</h2>
+  <h2 style="text-align:center"><u><em>Questions Papers List</em></u></h2>
  <div class="container">
-
-     <table id="myTable2" style="width: 100%">
+<p><em> You can sort the table according to the column you wish by clicking on column header. </em></p>
+<p><em> Click on the Question Paper Name to view detail about the question paper. </em></p>
+     <table id="myTable2" style="width: 100%; text-align:center">
     <tr>
-        <th class="stat" onclick="sortTable(0)">Name</th>
-        <th class="ans" onclick="sortTable(1)">Marks</th>
-        <th class="tag" onclick="sortTable(2)">Number of Questions</th>
+        <th class="stat" onclick="sortTable(0)" style="padding: 10px"><em>Question Paper Name</em></th>
+        <th class="ans" onclick="sortTable(1)" style="padding: 10px"><em>Marks</em></th>
+        <th class="tag" onclick="sortTable(2)"style="padding: 10px"><em>Number of Questions</em></th>
     </tr>
     {% for paper in paper_list %}
     <tr>
-        <td><div><a href="{% url 'Home:paper_detail' name=paper.name %}"> {{ paper.name }}</a></div></td>
-        <td>{{ paper.marks }}</td>
-        <td>{{ paper.total_sum_ques }}</td>
+        <td style="text-align:left; padding-left: 7px; padding-top: 5px"><div><a class= "four" href="{% url 'Home:paper_detail' name=paper.name %}"><em> {{ paper.name }}</em></a></div></td>
+        <td><em>{{ paper.marks }}</em></td>
+        <td><em>{{ paper.total_sum_ques }}</em></td>
     </tr>
     {% endfor %}
 </table>
 
-         <button class="button button2"><a  href="{% url 'Home:add_paper' %}">Create a Question Paper</a></button>
-     <button class="button button2"><a  href="{% url 'Home:qbList' %}">Home</a></button>
+         <br><br>
+         <div style="text-align:center">
+          <button class="button"><a  href="{% url 'Home:add_paper' %}"><em>Create a Question Paper</em></a></button>
+          <br>
+          <br>
+          <button class="button"><a  href="{% url 'Home:qbList' %}"><em>Go to Home</em></a></button>
+         </div>
 
     
 </div>

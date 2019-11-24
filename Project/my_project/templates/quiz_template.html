@@ -109,10 +109,10 @@
 
       {% if cnt == forloop.counter %}
       <div class="title-page">
-      {% for subques in t %}
-        <div class="details">({{cnt}}.{{forloop.counter}}) {{ subques.statement }} </div><div style="text-align: right">({{subques.marks}} marks)</div>
-      {% endfor %}
-  </div>
+        {% for subques in t %}
+            <div class="details">({{cnt}}.{{forloop.counter}}) {{ subques.statement }} </div><div style="text-align: right">({{subques.marks}} marks)</div>
+        {% endfor %}
+      </div>
         <div>
             <span style="text-align: right;">Roll No. ____________________</span>
             <hr class='hrItem' />

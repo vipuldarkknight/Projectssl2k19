@@ -3,10 +3,13 @@
 {% block title %}Add{% endblock %}
 
 {% block content %}
-  <h2>Add Files</h2>
+  <h2 style="text-align:center"><em>Add Files</em></h2>
+ <!-- <div style="text-align:center"> -->
  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-     <button type="submit">Upload</button>
+    <br>
+     <button class="button6" type="submit"><em>Upload</em></button>
   </form>
+<!-- </div> -->
 {% endblock %}

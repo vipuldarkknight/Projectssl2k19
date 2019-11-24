@@ -3,10 +3,12 @@
 {% block title %}Add{% endblock %}
 
 {% block content %}
-  <h2>Add Question Bank</h2>
- <form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-     <button type="submit">Upload</button>
-  </form>
+  <h2 style="text-align: center"><em>Add a New Question Bank</em></h2>
+  <div style="text-align:center">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="button6" type="submit"><em>Create</em></button>
+    </form>
+  </div>
 {% endblock %}

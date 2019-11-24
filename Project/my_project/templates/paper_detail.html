@@ -3,52 +3,59 @@
 {% block title %}Detail{% endblock %}
 
 {% block content %}
-  <h2>Paper Details</h2>
+  <h2 style="text-align:center"><em>Paper Details</em></h2>
 
-    <h4>{{ paper.name }}</h4>
-    <h4>Marks: {{ paper.marks }}</h4>
-    <h4>{{ paper.num_ques }} Questions</h4>
-    <h4>Duration : {{ paper.duration }}</h4>
+    <h4><em> Paper Name: {{ paper.name }}</em></h4>
+    <h4><em> Marks: {{ paper.marks }} </em></h4>
+    <h4><em> Number Of Questions: {{ paper.num_ques }} Questions </em></h4>
+    <h4><em> Duration: {{ paper.duration }} </em></h4>
 
 <span>
-     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+     <button class="button button1"><a href="{% url 'Home:qbList' %}"><em>Go To Home</em></a></button>
  </span>
-
-<form method="GET">
-{{ filter.form.as_p }}
-<button type="submit">Search</button>
-</form>
 <br><br>
-<h2>Questions</h2>
+<form method="GET">
+    <div style="text-align:center">
+        <button class="buttonbase button3" type="submit"><em>Search</em></button>
+    </div>
+    {{ filter.form.as_p }}
+
+</form>
+
+<br>
+<h2 style="text-align:center"><em>Questions</em></h2>
 <div class="container">
 <table class="users" style="width: 100%">
     <tr>
-        <th class="stat">statement</th>
-        <th class="ans">answer</th>
-        <th class="tag">tag</th>
-        <th class="marks">marks</th>
-        <th class="diff">difficulty</th>
+        <th class="stat" style="padding: 15px"><em>Statement</em></th>
+        <th class="ans" style="padding: 15px"><em>Answer</em></th>
+        <th class="tag" style="padding: 15px"><em>Tag</em></th>
+        
+        <th class="diff" style="padding: 15px"><em>Difficulty</em></th>
+        <th class="marks" style="padding: 15px"><em>Marks</em></th>
     </tr>
     {% for ques in filter.qs %}
     <tr> 
-        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td><div style="white-space: pre-line"><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
-        <td>{{ ques.tag }}</td>
-        <td>{{ ques.marks }}</td>
-        <td>{{ ques.difficulty }}</td>
+        <td style="padding: 7px"><div style="white-space: pre-line"><a class="two" href="{% url 'Home:view_ques' id=ques.id %}" target="_blank"><em>{{ ques.statement }}</em></a></div></td>
+        <td style="padding: 7px"><div style="white-space: pre-line"><a class="two" href="{% url 'Home:view_ans' id=ques.id %}" target="_blank"><em>{{ ques.answer }}</em></a></div></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.tag }}</em></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.marks }}</em></td>
+        <td style="padding: 7px; text-align:center"><em>{{ ques.difficulty }}</em></td>
     </tr>
     {% endfor %}
 </table>
 </div>
 
-<h2>Question Modules</h2>
+<br>
+
+<h2 style="text-align:center"><em>Question Modules</em></h2>
 
 {% for qm in ques_module_list %}
-    <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
+    <p><a class="four" href="{% url 'Home:ques_module_detail' id=qm.id %}"><em>{{ qm.statement }}</em></a></p>
 {% endfor %}
 
-<br><br>
-<span>
-     <button><a href="{% url 'Home:generate_pdf' id=paper.id %}" target="_blank">Export PDF</a></button>
- </span>
+<br><br><br><br>
+<div style="text-align:center">
+     <button class="button button7"><a class="four" href="{% url 'Home:generate_pdf' id=paper.id %}" target="_blank"><em>Export PDF</em></a></button>
+ </div>
 {% endblock %}

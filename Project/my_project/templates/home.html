@@ -6,31 +6,23 @@
 {% block content %}
 {% if user.is_authenticated %}
 
- <h1 align='center'> Welcome {{ user.username }} </h1>
+ <h1 align='center'><em> Welcome {{ user.username }} </em></h1>
   <div align="center">
-     <h3 align="center"> Maintain your list of question banks here </h3>
-     <button class="button button2"><a  href="{% url 'Home:add_qb' %}">Add Question Bank</a></button>
-      <button class="button button2"><a  href="{% url 'Home:your_paper' %}">See Your Question Papers</a></button>
+     <h3 align="center"> <em> Maintain your list of question banks here </em></h3>
+     <button class="button button2"><a  href="{% url 'Home:add_qb' %}"><em>Add Question Bank</em></a></button>
+      <button class="button button2"><a  href="{% url 'Home:your_paper' %}"><em>See Your Question Papers</em></a></button>
     </div>
     <br>
-    <div style="margin-left: 10px; margin-right: 10px; padding: 20px 20px 20px 10px;  background-color: lightgreen">
-    
- <!-- <h1 align='center'> Hi {{ user.username }}! </h1> -->
-  <!-- <p align='center'><a href="{% url 'logout' %}">Logout</a></p>
-  <p align='center'><a href="{% url 'change_password' %}">Change Password</a></p>
-  <p align='center'><a href="{% url 'edit' %}">Edit Profile</a></p> -->
+    <div style="margin-left: 10px; margin-right: 10px; padding: 5px 10px 20px 10px;  background-color: lightgreen">
+      <h2 style="text-align:center"><em> Already Created Question Banks </em></h2> 
+        
+        {% for qb in qb_list %}
 
-   <!--  <p>
-     <button><a href="{% url 'Home:add_qb' %}">Add Question Bank</a></button>
-    </p> -->
-
-    {% for qb in qb_list %}
-
-        <div style="background-color: #55AED6;padding: 5px 5px 5px 10px"> <a href="{% url 'Home:detail_qb' name=qb.name %}"> {{ qb.name }}</a></div>
-        <br>
-          <!-- {{ qb.username }} -->
-    {% endfor %}
-  </div>
+            <div style="background-color: #55AED6;padding: 5px 5px 5px 10px"> <a class= "two" href="{% url 'Home:detail_qb' name=qb.name %}"><em> {{ qb.name }}</em></a></div>
+            <br>
+              <!-- {{ qb.username }} -->
+        {% endfor %}
+    </div>
   <br><br><br>
   
   <div style="background-color: #D6AB55">
