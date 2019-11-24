@@ -1,7 +1,6 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-
 from . import views
 
 app_name = 'Home'
@@ -9,6 +8,10 @@ app_name = 'Home'
 urlpatterns = [
     path('', views.qbList, name='qbList'),
     path('add_qb/', views.add_qb, name='add_qb'),
+    path('single_correct_mcq/<name>/', views.SingleCorrectMCQ, name='single_mcq'),
+    path('multi_correct_mcq/<name>/', views.MultiCorrectMCQ, name='multicorrect_mcq'),
+    path('matchthecolumns/<name>/', views.matchthecolumns, name='matchingtype'),
+    path('add_ques/<name>/', views.add_ques, name='add_ques'),
     path('your_paper/', views.your_paper, name='your_paper'),
     path('add_paper/', views.add_paper, name='add_paper'),
     path('detail_qb/<name>/', views.detail_qb, name='detail_qb'),
@@ -27,6 +30,7 @@ urlpatterns = [
     path('view_subques/<id>/', views.view_subques, name='view_subques'),
     path('view_subans/<id>/', views.view_subans, name='view_subans'),
     path('edit_subques/<id>/', views.edit_subques, name='edit_subques'),
+    path('pdf/<id>/',views.generate_pdf,name='generate_pdf'),
 ]
 
 if settings.DEBUG:

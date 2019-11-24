@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Single Correct MCQ{% endblock %}
+
+{% block content %}
+<h2>Add Single_correct MCQ's here</h2>
+<div class="container">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table>
+                {{ book_formset }}
+            </table>    
+            <br> <br> <br> <br>
+            <table>
+                {{ article_formset }}
+            </table>
+            <br>
+            <button type="submit">Upload</button>     
+
+            </form>
+</div>
+{% endblock %}

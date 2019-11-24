@@ -1,17 +1,197 @@
-
+from itertools import chain
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, render_to_response
 from django.urls import reverse
 from django.template import RequestContext
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import render_to_string
 
+# from . models import Question_Banks_Main, Questions_Main, created_paper
+# from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, SingleCorrectForm, MCQForm
+from django.forms import formset_factory
+# from django.shortcuts import render
+# from myapp.forms import ArticleForm
 from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
 # from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm
 from .filters import QuestionsFilter, SubQuestionsFilter
+from django.http import HttpResponse
+from django.views.generic import View
+from .utils import render_to_pdf
+
 # Create your views here.
+
+def SingleCorrectMCQ(request, name):
+    ArticleFormSet = formset_factory(SingleCorrectForm, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid():
+            # do something with the cleaned_data on the formsets.
+
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans = data['Answer']
+
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans
+            q.qtype=2
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)            
+
+    else:
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'single_correct.html', {
+        'article_formset': article_formset,
+        'book_formset': book_formset,
+    })
+
+def MultiCorrectMCQ(request, name):
+    ArticleFormSet = formset_factory(MultiCorrectForm, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid():
+            
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans = data['Choose_Answers']
+                qans_string = ""
+
+                for a in qans:
+                    qans_string = qans_string + a + "\n"
+
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans_string
+            q.qtype=3
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)
+    else:
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'multi_correct.html', {
+        'article_formset': article_formset,
+        'book_formset': book_formset,
+    })
+
+def matchthecolumns(request, name):
+    ArticleFormSet = formset_factory(MatchtheColumnForm, extra=2, max_num=1)
+    ArticleFormSet1 = formset_factory(MatchtheColumn2Form, extra=2, max_num=1)
+    BookFormSet = formset_factory(MCQForm)
+    if request.method == 'POST':
+        article_formset = ArticleFormSet(request.POST, request.FILES, prefix='articles')
+        article_formset1 = ArticleFormSet1(request.POST, request.FILES, prefix='articles1')
+        book_formset = BookFormSet(request.POST, request.FILES, prefix='books')
+        if article_formset.is_valid() and book_formset.is_valid() and article_formset1.is_valid():
+            
+            for data in book_formset.cleaned_data:
+                
+                qstatement = data['statement']
+                qmarks = data['marks']
+                qdifficulty = data['difficulty']
+                qtag = data['tag']
+
+                statement_final = ""
+                statement_final = statement_final + qstatement + "\n"
+        
+            for data in article_formset.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['Choice1'] + "\n"
+                statement_final = statement_final + "B) " + data['Choice2'] + "\n"
+                statement_final = statement_final + "C) " + data['Choice3'] + "\n"
+                statement_final = statement_final + "D) " + data['Choice4'] + "\n"
+
+                qans1 = data['Answer1']
+                qans2 = data['Answer2']
+                qans3 = data['Answer3']
+                qans4 = data['Answer4']
+
+            for data in article_formset1.cleaned_data:
+
+                statement_final = statement_final + "A) " + data['A'] + "\n"
+                statement_final = statement_final + "B) " + data['B'] + "\n"
+                statement_final = statement_final + "C) " + data['C'] + "\n"
+                statement_final = statement_final + "D) " + data['D'] + "\n"
+
+
+            qans_string=""
+            qans_string = qans1 + "\n" + qans2 + "\n" + qans3 + "\n" + qans4 + "\n" 
+            
+            q = Questions_Main()
+            q.statement=statement_final
+            q.marks=qmarks
+            q.difficulty=qdifficulty
+            q.tag=qtag
+            q.answer=qans_string
+            q.qtype=4
+            q.username=request.user.username
+            q.qb_name=name
+            q.save()
+
+            return redirect('Home:detail_qb', name=name)
+
+
+    else:
+        article_formset1 = ArticleFormSet1(prefix='articles1')
+        article_formset = ArticleFormSet(prefix='articles')
+        book_formset = BookFormSet(prefix='books')
+    return render(request, 'matchcolumns.html', {
+        'article_formset': article_formset,
+        'article_formset1': article_formset1,
+        'book_formset': book_formset,
+    })
+
+
 def qbList(request):
     qb_list = Question_Banks_Main.objects.filter(username=request.user.username).values('name').distinct()
     return render(request, 'home.html', {
@@ -117,6 +297,12 @@ def add_qb(request):
         'form': form
     })
 
+def add_ques(request, name):
+    return render(request, 'add_ques.html', {
+        'name': name
+    })
+
+
 def add_ques_manually(request, name):
     if request.method == 'POST':
         form = QuestionForm(request.POST)
@@ -124,6 +310,7 @@ def add_ques_manually(request, name):
             ques = form.save(commit=False)
             ques.username = request.user.username
             ques.qb_name = name
+            ques.qtype = 1
             ques.save()
             return redirect('Home:detail_qb', name=name)
             # return HttpResponse(name)
@@ -405,3 +592,36 @@ def qsplit(qfile):
         ql=ql+[dic]
     return ql
 
+def generate_pdf(request,id):
+    paper_instance = created_paper.objects.get(id=id)
+    ques_id_list = paper_instance.ques_id.split()
+    ques_list = Questions_Main.objects.filter(pk__in=ques_id_list)
+    quesm_id_list = paper_instance.ques_module_id.split()
+    quesm_list = Question_Module.objects.filter(pk__in=quesm_id_list)
+    comb_list=chain(quesm_list,ques_list)
+    comb_list2=chain(quesm_list,ques_list)
+    qm_size = len(quesm_list)
+    ll = []
+    
+    cnt=1;
+    
+    for i in quesm_list:
+        subques_temp = SubQuestions.objects.filter(question_module_id=i.id)
+        ll.append((cnt,subques_temp))
+        cnt=cnt+1
+    
+    print(ll)
+    
+    data = {
+         'quesm_list':quesm_list,
+         'ques_list':ques_list,
+         'paper':paper_instance,
+         'comb_list':comb_list,
+         'comb_list2':comb_list2,
+         'qm_size': qm_size,
+         'll': ll
+    }
+    pdf = render_to_pdf('quiz_template.html', data)
+    if pdf:
+        return HttpResponse(pdf, content_type='application/pdf')
+    return HttpResponse("Not found")    

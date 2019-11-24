@@ -1,0 +1,169 @@
+<!DOCTYPE HTML >
+<html>
+    <head>
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+        </script>
+        <script type="text/javascript"
+          src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+        </script>
+
+        <title>QUIZ</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }    
+            .header {
+                        font-size: 20px;
+                        font-weight: 100;
+                        text-align: center;
+                        color: #007cae;
+                    }
+
+            table
+            {
+               border: 1px solid black;
+              border-collapse: collapse;
+            }
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+               /* text-align: right;*/
+               padding: 10px 20px 0px 20px;  
+            }
+            .title span {
+                color: #007cae;
+            }
+            .details {
+                padding: 10px 20px 0px 20px;
+                text-align: left !important;
+                /*margin-left: 40%;*/
+            }
+            .hrItem {
+                border: none;
+                height: 2px;
+                /* Set the hr color */
+                color: #333; /* old IE */
+                background-color: #fff; /* Modern Browsers */
+                /*margin-bottom:0;*/
+            }
+ #top, #bottom, #left, #right {
+    background: #a5ebff;
+    position: fixed;
+    }
+    #left, #right {
+        top: 0; bottom: 0;
+        width: 15px;
+        }
+        #left { left: 0; }
+        #right { right: 0; }
+        
+    #top, #bottom {
+        left: 0; right: 0;
+        height: 15px;
+        }
+        #top { top: 0; }
+        #bottom { bottom: 0; }
+        
+        div#main1 {
+          width: 90%;
+          margin: 0 auto 0 auto;
+          overflow: hidden;
+        }
+
+
+    .title-page {
+    page-break-after: always;
+    }
+
+        </style>
+    </head>
+    <body >
+    <div>
+            <span style="text-align: right;">Roll No. ____________________</span>
+            <hr class='hrItem' />
+    </div>    
+   <div style=" page-break-after: always;">  
+
+  <!-- <div class="title-page" > -->
+        <div class='wrapper'>
+            <div class='header'>
+                <p class='title'>{{ paper.name }} </p>
+                <p class='title'>Maximum marks : {{ paper.marks }} </p>
+                <p class='title'>Duration : {{ paper.duration }} </p>
+            </div>
+
+<div class="container details">
+      <table style="width: 100%;">
+         <thead> 
+          <tr>
+              <th>Question No.</th>
+              <th>Maximum marks</th>
+              <th>Marks obtained</th>
+          </tr>
+        </thead>
+          <tbody>
+            {% for ques in comb_list %}
+            <tr> 
+                <td style='text-align: center;'>{{ forloop.counter }}</td>
+                <td style="text-align: center;">{{ ques.marks }}</td>
+                <td> </td>
+            </tr>
+            {% endfor %}    
+          </tbody>
+      </table>
+    </div>
+    <!-- <hr class='hrItem' style="margin-top: 100%" /> -->
+</div>
+<!-- </div> -->
+
+   </div>
+  {% for ques in comb_list2 %}
+        <div>
+            <span style="text-align: right;">Roll No. ____________________</span>
+            <hr class='hrItem' />
+        </div>
+    <div class="title-page">
+      <div class="details">({{ forloop.counter }}) {{ ques.statement }}</div><div style="text-align: right">({{ques.marks}} marks)</div>
+
+      {% if forloop.counter <= qm_size %}
+      {% for cnt,t in ll %}
+
+      {% if cnt == forloop.counter %}
+      <div class="title-page">
+      {% for subques in t %}
+        <div class="details">({{cnt}}.{{forloop.counter}}) {{ subques.statement }} </div><div style="text-align: right">({{subques.marks}} marks)</div>
+      {% endfor %}
+  </div>
+        <div>
+            <span style="text-align: right;">Roll No. ____________________</span>
+            <hr class='hrItem' />
+        </div>
+      {% endif %}
+
+      {{ break }}
+      {% endfor %}
+      {% endif %}
+
+    </div>
+  {% endfor %}
+    <div class="title-page">
+        <div>
+            <span style="text-align: right;">Roll No. ____________________</span> 
+           <hr class='hrItem' />
+       </div>
+      <h2>Scratch Space</h2>
+    </div>
+    <div class="title-page">
+        <div>
+            <span style="text-align: right;">Roll No. ____________________</span>
+            <hr class='hrItem' />
+        </div>
+
+      <h2>Scratch Space</h2>
+    </div>
+
+    
+    </body>
+</html>

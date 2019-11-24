@@ -47,4 +47,8 @@
     <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
 {% endfor %}
 
+<br><br>
+<span>
+     <button><a href="{% url 'Home:generate_pdf' id=paper.id %}" target="_blank">Export PDF</a></button>
+ </span>
 {% endblock %}

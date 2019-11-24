@@ -30,6 +30,12 @@ class Questions_Main(models.Model):
     marks = models.IntegerField()
     difficulty = models.CharField(max_length=100, choices=DIFFICULTY_CHOICES, default=EASY)
     tag = models.CharField(max_length=30)
+    qtype = models.IntegerField()
+
+    #1-descriptive
+    #2-single_mcq
+    #3-multiple_mcq
+    #4-match the column
 
     def __str__(self):
         return self.tag
