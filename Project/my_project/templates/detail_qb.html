@@ -5,12 +5,20 @@
 {% block content %}
   <h2>Details</h2>
 
+<span>
+     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+ </span>
+
  <span>
      <button><a href="{% url 'Home:upload_qbfile' name=qb_name %}">Add File</a></button>
  </span>
 
  <span>
      <button><a href="{% url 'Home:add_ques_manually' name=qb_name %}">Add Question Manually</a></button>
+ </span>
+
+ <span>
+     <button><a href="{% url 'Home:add_ques_module' name=qb_name %}">Add a Question Module</a></button>
  </span>
 
  <span>
@@ -26,7 +34,10 @@
 {{ filter.form.as_p }}
 <button type="submit">Search</button>
 </form>
-<table class="users" style="width: 100%">
+<br><br>
+<h2>QUESTIONS</h2>
+<div class="container">
+<table class="userss" style="width: 100%">
     <tr>
         <th class="stat">statement</th>
         <th class="ans">answer</th>
@@ -42,9 +53,16 @@
         <td>{{ ques.tag }}</td>
         <td>{{ ques.marks }}</td>
         <td>{{ ques.difficulty }}</td>
-        <td><button><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
+        <td align="center"><button><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>
+</div>
+
+<h2>QUESTION MODULES</h2>
+
+{% for qm in ques_module_list %}
+    <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
+{% endfor %}
 
 {% endblock %}

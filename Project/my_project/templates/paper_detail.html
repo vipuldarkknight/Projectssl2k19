@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail{% endblock %}
+
+{% block content %}
+  <h2>Paper Details</h2>
+
+    <h4>{{ paper.name }}</h4>
+    <h4>Marks: {{ paper.marks }}</h4>
+    <h4>{{ paper.num_ques }} Questions</h4>
+    <h4>Duration : {{ paper.duration }}</h4>
+
+<span>
+     <button><a href="{% url 'Home:qbList' %}">Home</a></button>
+ </span>
+
+<form method="GET">
+{{ filter.form.as_p }}
+<button type="submit">Search</button>
+</form>
+<br><br>
+<h2>Questions</h2>
+<div class="container">
+<table class="users" style="width: 100%">
+    <tr>
+        <th class="stat">statement</th>
+        <th class="ans">answer</th>
+        <th class="tag">tag</th>
+        <th class="marks">marks</th>
+        <th class="diff">difficulty</th>
+    </tr>
+    {% for ques in filter.qs %}
+    <tr> 
+        <td><div><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td><div><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
+        <td>{{ ques.tag }}</td>
+        <td>{{ ques.marks }}</td>
+        <td>{{ ques.difficulty }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+
+<h2>Question Modules</h2>
+
+{% for qm in ques_module_list %}
+    <p><a href="{% url 'Home:ques_module_detail' id=qm.id %}">{{ qm.statement }}</a></p>
+{% endfor %}
+
+{% endblock %}
