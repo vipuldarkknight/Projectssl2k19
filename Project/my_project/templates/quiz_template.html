@@ -1,6 +1,6 @@
 <html>
 <head>
-  <title>Test</title>
+  <title>QUIZ</title>
   <style>
     body {
       background-color: #f7f7f7;
@@ -8,9 +8,9 @@
   </style>
 </head>
 <body>
-  <h1>Test Template</h1>
-  {% for paragraph in paragraphs %}
-    <p>{{ paragraph }}</p>
+  <h1>{{ paper.name }}</h1>
+  {% for ques in ques_list %}
+    <p>{{ ques }}</p>
   {% endfor %}
 </body>
 </html>

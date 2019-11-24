@@ -40,6 +40,8 @@ class created_paper(models.Model):
     num_ques = models.IntegerField()
     marks = models.IntegerField()
     ques_id = models.CharField(max_length=150)
+    num_ques_modules=models.IntegerField()
+    ques_module_id = models.CharField(max_length=150)
 
     def __str__(self):
         return self.name

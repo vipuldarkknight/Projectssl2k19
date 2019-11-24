@@ -1,8 +1,6 @@
 from django.urls import path
-from django.urls import url
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import GeneratePDF
 from . import views
 
 app_name = 'Home'
@@ -28,7 +26,7 @@ urlpatterns = [
     path('view_subques/<id>/', views.view_subques, name='view_subques'),
     path('view_subans/<id>/', views.view_subans, name='view_subans'),
     path('edit_subques/<id>/', views.edit_subques, name='edit_subques'),
-    url(r'^pdf/$',GeneratePDF.as_view()),
+    path('pdf/<id>/',views.generate_pdf,name='generate_pdf'),
 ]
 
 if settings.DEBUG:

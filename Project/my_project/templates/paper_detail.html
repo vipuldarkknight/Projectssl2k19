@@ -38,5 +38,8 @@
     {% endfor %}
 </table>
 </div>
-
+<br><br>
+<span>
+     <button><a href="{% url 'Home:generate_pdf' id=paper.id %}" target="_blank">Export PDF</a></button>
+ </span>
 {% endblock %}
