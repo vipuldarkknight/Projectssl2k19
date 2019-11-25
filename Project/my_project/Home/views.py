@@ -429,9 +429,9 @@ def upload_qbfile(request, name):
             qb.username = request.user.username
             qb.name = name
 
-            filepath = request.FILES.get('filepath', False)
+            # filepath = request.FILES.get('filepath', False)
 
-            if filepath == False:
+            if not qb.file:
                 messages.add_message(request, messages.INFO, 'Some File Must be Uploaded')
                 return redirect('Home:upload_qbfile', name=name)
 
@@ -768,7 +768,7 @@ def tex_pdf(id):
                 lst=ques.statement.split('\n')
                 fn.write("\\item "+"{\\large "+lst[0]+"}\n")
                 fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]} \\"+"\\ "+"\\"+"\\ \n")
-                fn.write("\\resizebox{0.50\\textwidth}{!}{% \n")
+                fn.write("\\resizebox{0.40\\textwidth}{!}{% \n")
                 fn.write("\\begin{tabular}{|c|c|}\n")
                 fn.write("\\hline ")
                 for i in range(1,5):

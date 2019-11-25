@@ -41,7 +41,7 @@
 <br><br>
 <h2 style="text-align:center"><em>QUESTIONS</em></h2>
 <div class="container">
-<table style="width: 100%">
+<table class="users" style="width: 100%">
     <tr>
         <th class="stat" style="padding: 15px"><em>Statement</em></th>
         <th class="ans" style="padding: 15px"><em>Answer</em></th>
@@ -51,13 +51,13 @@
         <th class="ed" style="padding: 15px"><em>Edit</em></th>
     </tr>
     {% for ques in filter.qs %}
-    <tr> 
-        <td style="padding: 7px"><div style="white-space: pre-line"><a class="four" href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
-        <td style="padding: 7px"><div style="white-space: pre-line"><a class="four" href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
-        <td style="padding: 7px; text-align:center">{{ ques.tag }}</td>
-        <td style="padding: 7px; text-align:center">{{ ques.marks }}</td>
-        <td style="padding: 7px; text-align:center">{{ ques.difficulty }}</td>
-        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
+    <tr style="height: 10px"> 
+        <td ><div style="white-space: pre-line"><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank">{{ ques.statement }}</a></div></td>
+        <td ><div style="white-space: pre-line"><a href="{% url 'Home:view_ans' id=ques.id %}" target="_blank">{{ ques.answer }}</a></div></td>
+        <td style="text-align:center">{{ ques.tag }}</td>
+        <td style="text-align:center">{{ ques.marks }}</td>
+        <td style="text-align:center">{{ ques.difficulty }}</td>
+        <td style="text-align:center"><button class="button5"><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>
