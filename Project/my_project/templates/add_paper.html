@@ -17,7 +17,36 @@
  <div class="container">
   <form method="post">
     {% csrf_token %}
-    {{form.as_table}}
+      <p>Question paper Name: {{form.QP_name}}</p>
+      <p>Question paper Duration: {{form.Duration}}</p>
+
+      <h3>Select Questions: </h3>
+
+      {% for x in form.Question_List %}
+      {% with one=forloop.counter %}
+      {% for ques in q_list %}
+      {% with two=forloop.counter %}
+      {% if one == two %}
+      <p><a href="{% url 'Home:view_ques' id=ques.id %}" target="_blank"> {{x}} {{ ques.statement }}</a></p>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+      {% endwith %}
+      {% endfor %}
+
+      <h3>Select Question Modules: </h3>
+
+      {% for x in form.Question_Module_List %}
+      {% with one=forloop.counter %}
+      {% for ques in qm_list %}
+      {% with two=forloop.counter %}
+      {% if one == two %}
+      <p><a href="{% url 'Home:ques_module_detail' id=ques.id %}" target="_blank"> {{x}} {{ ques.statement }}</a></p>
+      {% endif %}
+      {% endwith %}
+      {% endfor %}
+      {% endwith %}
+      {% endfor %}
 
      <button type="submit" value="submit">Create</button>
   </form>
