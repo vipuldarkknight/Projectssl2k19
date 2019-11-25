@@ -27,9 +27,9 @@
  <!-- <span>
         <button><a href="{% url 'Home:single_mcq' name=qb_name %}">Single_Choice_MCQ</a></button>
  </span> -->
-
-
-<br><br><br><br>
+<br>
+<h3 atyle="text-align:center"><em> Question Bank Name: {{ qb_name }} </em></h3> 
+<br><br>
 <form method="GET">
 <div style="text-align:center">
     <button class="buttonbase button3" type="submit"><em>Search<em></button>
@@ -57,7 +57,7 @@
         <td style="padding: 7px; text-align:center">{{ ques.tag }}</td>
         <td style="padding: 7px; text-align:center">{{ ques.marks }}</td>
         <td style="padding: 7px; text-align:center">{{ ques.difficulty }}</td>
-        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_ques' id=ques.id %}"><em>Edit</em></a></button></td>
+        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_ques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>

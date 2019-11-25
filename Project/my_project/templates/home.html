@@ -13,12 +13,12 @@
       <button class="button button2"><a  href="{% url 'Home:your_paper' %}"><em>See Your Question Papers</em></a></button>
     </div>
     <br>
-    <div style="margin-left: 10px; margin-right: 10px; padding: 5px 10px 20px 10px;  background-color: lightgreen">
+    <div style="margin-left: 10px; margin-right: 10px; padding: 5px 10px 20px 10px;  background-color: #999966">
       <h2 style="text-align:center"><em> Already Created Question Banks </em></h2> 
         
         {% for qb in qb_list %}
 
-            <div style="background-color: #55AED6;padding: 5px 5px 5px 10px"> <a class= "two" href="{% url 'Home:detail_qb' name=qb.name %}"><em> {{ qb.name }}</em></a></div>
+            <div style="background-color: #cccc00;padding: 5px 5px 5px 10px"> <a class= "two" href="{% url 'Home:detail_qb' name=qb.name %}"><em> {{ qb.name }}</em></a></div>
             <br>
               <!-- {{ qb.username }} -->
         {% endfor %}

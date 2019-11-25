@@ -2,31 +2,32 @@
 {% block title %}See_ques{% endblock %}
 
 {% block content %}
-  <h2 style="text-align:center"><u><em>Questions Papers List</em></u></h2>
+  <h2 style="text-align:center">Questions Papers List</h2>
  <div class="container">
-<p><em> You can sort the table according to the column you wish by clicking on column header. </em></p>
-<p><em> Click on the Question Paper Name to view detail about the question paper. </em></p>
+<p> You can sort the table according to the column you wish by clicking on column header. </p>
+<p> Click on the Question Paper Name to view detail about the question paper. </p>
+     
      <table id="myTable2" style="width: 100%; text-align:center">
     <tr>
-        <th class="stat" onclick="sortTable(0)" style="padding: 10px"><em>Question Paper Name</em></th>
-        <th class="ans" onclick="sortTable(1)" style="padding: 10px"><em>Marks</em></th>
-        <th class="tag" onclick="sortTable(2)"style="padding: 10px"><em>Number of Questions</em></th>
+        <th class="stat" onclick="sortTable(0)" style="padding: 10px">Question Paper Name</th>
+        <th class="ans" onclick="sortTable(1)" style="padding: 10px">Marks</th>
+        <th class="tag" onclick="sortTable(2)" style="padding: 10px">Number of Questions</th>
     </tr>
     {% for paper in paper_list %}
     <tr>
-        <td style="text-align:left; padding-left: 7px; padding-top: 5px"><div><a class= "four" href="{% url 'Home:paper_detail' name=paper.name %}"><em> {{ paper.name }}</em></a></div></td>
-        <td><em>{{ paper.marks }}</em></td>
-        <td><em>{{ paper.total_sum_ques }}</em></td>
+        <td style="text-align:left; padding-left: 7px; padding-top: 5px"><div><a class= "four" href="{% url 'Home:paper_detail' name=paper.name %}"> {{ paper.name }}</a></div></td>
+        <td>{{ paper.marks }}</td>
+        <td>{{ paper.total_sum_ques }}</td>
     </tr>
     {% endfor %}
 </table>
 
          <br><br>
          <div style="text-align:center">
-          <button class="button"><a  href="{% url 'Home:add_paper' %}"><em>Create a Question Paper</em></a></button>
+          <button class="button"><a  href="{% url 'Home:add_paper' %}">Create a Question Paper</a></button>
           <br>
           <br>
-          <button class="button"><a  href="{% url 'Home:qbList' %}"><em>Go to Home</em></a></button>
+          <button class="button"><a  href="{% url 'Home:qbList' %}">Go to Home</a></button>
          </div>
 
     

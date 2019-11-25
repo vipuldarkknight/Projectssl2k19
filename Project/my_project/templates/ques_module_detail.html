@@ -46,7 +46,7 @@
         <td style="padding: 7px; text-align:center"><em>{{ ques.tag }}</em></td>
         <td style="padding: 7px; text-align:center"><em>{{ ques.marks }}</em></td>
         <td style="padding: 7px; text-align:center"><em>{{ ques.difficulty }}</em></td>
-        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_subques' id=ques.id %}"><em>Edit</em></a></button></td>
+        <td style="padding: 7px; text-align:center"><button class="button5"><a href="{% url 'Home:edit_subques' id=ques.id %}">Edit</a></button></td>
     </tr>
     {% endfor %}
 </table>
