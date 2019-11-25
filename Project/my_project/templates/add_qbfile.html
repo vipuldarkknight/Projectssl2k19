@@ -3,8 +3,19 @@
 {% block title %}Add{% endblock %}
 
 {% block content %}
-  <h2 style="text-align:center"><em>Add Files</em></h2>
- <!-- <div style="text-align:center"> -->
+
+  
+ 
+
+    {% if messages %}
+    <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+ 
+ <h2 style="text-align:center"><em>Add Files</em></h2>
  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}

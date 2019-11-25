@@ -5,10 +5,12 @@
 {% block content %}
   <h2 style="text-align:center"><em>Paper Details</em></h2>
 
+
     <h4><em> Paper Name: {{ paper.name }}</em></h4>
     <h4><em> Marks: {{ paper.marks }} </em></h4>
-    <h4><em> Number Of Questions: {{ paper.num_ques }} Questions </em></h4>
+    <h4><em> Number Of Questions: {{ paper.total_sum_ques }} Questions </em></h4>
     <h4><em> Duration: {{ paper.duration }} </em></h4>
+
 
 <span>
      <button class="button button1"><a href="{% url 'Home:qbList' %}"><em>Go To Home</em></a></button>
