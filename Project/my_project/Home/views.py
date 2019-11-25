@@ -293,7 +293,12 @@ def add_paper(request):
         form.fields["Question_List"].choices = q_tup
         form.fields["Question_Module_List"].choices = qm_tup
 
-        print(form)
+        # print(form)
+        for x in q_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
+
+        for x in qm_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
 
     return render(request, 'add_paper.html', {
         'form': form,
