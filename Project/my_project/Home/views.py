@@ -14,7 +14,7 @@ from django.forms import formset_factory
 # from django.shortcuts import render
 # from myapp.forms import ArticleForm
 from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form, Ques_Module_Name_Form
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
@@ -550,7 +550,7 @@ def add_subques(request, id):
             ques.question_module_id = id
             ques.save()
 
-            print(ques.marks)
+            # print(ques.marks)
             ques_module.marks = ques_module.marks + ques.marks
             ques_module.ques_id_string = ques_module.ques_id_string + str(ques.id) + " "
             ques_module.save()
@@ -632,6 +632,33 @@ def edit_subques(request, id):
         form = SubQuestionForm(instance=ques_instance)
 
         return render(request, 'add_ques_manually.html', {
+            'form': form
+        })
+
+def edit_ques_module(request, id):
+    ques_module_instance = Question_Module.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = Ques_Module_Name_Form(request.POST, instance=ques_module_instance)
+        if form.is_valid():
+            form.save()
+
+            papers = created_paper.objects.filter(username=request.user.username)
+            for p in papers:
+                p.marks = 0
+                l = p.ques_id.split()
+                l2 = p.ques_module_id.split()
+                for i in l:
+                    p.marks = p.marks + Questions_Main.objects.get(id=i).marks
+                for i in l2:
+                    p.marks = p.marks + Question_Module.objects.get(id=i).marks
+                p.save()
+
+            return redirect('Home:ques_module_detail', id=id)
+
+    else:
+        form = Ques_Module_Name_Form(instance=ques_module_instance)
+        return render(request, 'edit_question_module.html', {
             'form': form
         })
 

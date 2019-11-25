@@ -31,6 +31,7 @@ urlpatterns = [
     path('view_subans/<id>/', views.view_subans, name='view_subans'),
     path('edit_subques/<id>/', views.edit_subques, name='edit_subques'),
     path('pdf/<id>/',views.generate_pdf,name='generate_pdf'),
+    path('edit_ques_module/<id>/', views.edit_ques_module, name='edit_ques_module'),
 ]
 
 
