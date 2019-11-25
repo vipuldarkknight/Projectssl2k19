@@ -707,7 +707,7 @@ def tex_pdf(id):
                 lst=ques.statement.split('\n')
                 fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
                 fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
-                fn.write("\\vspace*{2cm}\n")
+                fn.write("\\vspace*{3.5cm}\n")
                 # fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+ ques.statement+"} \n")
             elif(ques.qtype==4):
                 lst=ques.statement.split('\n')
