@@ -14,7 +14,7 @@ from django.forms import formset_factory
 # from django.shortcuts import render
 # from myapp.forms import ArticleForm
 from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form, Ques_Module_Name_Form
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
@@ -248,7 +248,7 @@ def add_paper(request):
 
                 for i in qlist:
                     id_temp = i
-                    print(id_temp)
+                    # print(id_temp)
                     ids = ids + id_temp + " "
                     ques_temp = Questions_Main.objects.filter(id=id_temp).get()
                     marks_sum = marks_sum + ques_temp.marks
@@ -280,11 +280,11 @@ def add_paper(request):
         q_tup = []
         qm_tup=[]
         for i in q_list:
-            x=[i.id,i.statement[:100]]
+            x=[i.id,""]
             x=tuple(x)
             q_tup.append(x)
         for i in qm_list:
-            x=[i.id,i.statement]
+            x=[i.id,""]
             x=tuple(x)
             qm_tup.append(x)
         q_tup = tuple(q_tup)
@@ -293,8 +293,17 @@ def add_paper(request):
         form.fields["Question_List"].choices = q_tup
         form.fields["Question_Module_List"].choices = qm_tup
 
+        # print(form)
+        for x in q_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
+
+        for x in qm_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
+
     return render(request, 'add_paper.html', {
-        'form': form
+        'form': form,
+        'q_list': q_list,
+        'qm_list': qm_list
     })
 
 @login_required
@@ -360,14 +369,27 @@ def edit_ques(request, id):
             ques.username = request.user.username
             ques.qb_name = name
             ques.save()
+
+            papers = created_paper.objects.filter(username=request.user.username)
+            for p in papers:
+                p.marks=0
+                l = p.ques_id.split()
+                l2 = p.ques_module_id.split()
+                for i in l:
+                    p.marks = p.marks + Questions_Main.objects.get(id=i).marks
+                for i in l2:
+                    p.marks = p.marks + Question_Module.objects.get(id=i).marks
+                p.save()
+
             return redirect('Home:detail_qb', name=name)
 
     else:
         form = QuestionForm(instance=ques_instance)
-
         return render(request, 'add_ques_manually.html', {
             'form': form
         })
+
+
 
 @login_required
 def detail_qb(request, name):
@@ -403,7 +425,15 @@ def upload_qbfile(request, name):
             qb = form.save(commit=False)
             qb.username = request.user.username
             qb.name = name
+
+            filepath = request.FILES.get('filepath', False)
+
+            if filepath == False:
+                messages.add_message(request, messages.INFO, 'Some File Must be Uploaded')
+                return redirect('Home:upload_qbfile', name=name)
+
             qb.save()
+
             l=qsplit(qb.file)
             if(l==-13):
                 print('fff')
@@ -530,7 +560,7 @@ def add_subques(request, id):
             ques.question_module_id = id
             ques.save()
 
-            print(ques.marks)
+            # print(ques.marks)
             ques_module.marks = ques_module.marks + ques.marks
             ques_module.ques_id_string = ques_module.ques_id_string + str(ques.id) + " "
             ques_module.save()
@@ -582,14 +612,63 @@ def edit_subques(request, id):
         form = SubQuestionForm(request.POST, instance=ques_instance)
         if form.is_valid():
             ques = form.save(commit=False)
-            ques.question_module_id = id
             ques.save()
-            return redirect('Home:ques_module_detail', id=id)
+
+            qm_id = ques_instance.question_module_id
+            # print(qm_id)
+            qm = Question_Module.objects.get(id=qm_id)
+
+            sub_id = qm.ques_id_string.split()
+            # sub = SubQuestions.objects.get(id=sub_id)
+            qm.marks = 0
+            for s in sub_id:
+                qm.marks = qm.marks + SubQuestions.objects.get(id=s).marks
+            qm.save()
+
+            papers = created_paper.objects.filter(username=request.user.username)
+            for p in papers:
+                p.marks=0
+                l = p.ques_id.split()
+                l2 = p.ques_module_id.split()
+                for i in l:
+                    p.marks = p.marks + Questions_Main.objects.get(id=i).marks
+                for i in l2:
+                    p.marks = p.marks + Question_Module.objects.get(id=i).marks
+                p.save()
+
+            return redirect('Home:ques_module_detail', id=qm_id)
 
     else:
         form = SubQuestionForm(instance=ques_instance)
 
         return render(request, 'add_ques_manually.html', {
+            'form': form
+        })
+
+def edit_ques_module(request, id):
+    ques_module_instance = Question_Module.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = Ques_Module_Name_Form(request.POST, instance=ques_module_instance)
+        if form.is_valid():
+            form.save()
+
+            papers = created_paper.objects.filter(username=request.user.username)
+            for p in papers:
+                p.marks = 0
+                l = p.ques_id.split()
+                l2 = p.ques_module_id.split()
+                for i in l:
+                    p.marks = p.marks + Questions_Main.objects.get(id=i).marks
+                for i in l2:
+                    p.marks = p.marks + Question_Module.objects.get(id=i).marks
+                p.save()
+
+            return redirect('Home:ques_module_detail', id=id)
+
+    else:
+        form = Ques_Module_Name_Form(instance=ques_module_instance)
+        return render(request, 'edit_question_module.html', {
             'form': form
         })
 
@@ -652,7 +731,7 @@ def tex_pdf(id):
     qm_size = len(quesm_list)
     ll = []
     
-    cnt=1;
+    cnt=1
     
     for i in quesm_list:
         subques_temp = SubQuestions.objects.filter(question_module_id=i.id)

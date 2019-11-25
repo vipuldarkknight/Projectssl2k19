@@ -16,6 +16,10 @@
 <h3>{{ ques_module.statement }}</h3>
 <h3>{{ ques_module.marks }}</h3>
 
+<span>
+     <button><a href="{% url 'Home:edit_ques_module' id=ques_module.id %}">Edit Question Module</a></button>
+ </span>
+
 
 <form method="GET">
 {{ filter.form.as_p }}
