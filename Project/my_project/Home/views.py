@@ -14,7 +14,7 @@ from django.forms import formset_factory
 # from django.shortcuts import render
 # from myapp.forms import ArticleForm
 from . models import Question_Banks_Main, Questions_Main, created_paper, Question_Module, SubQuestions
-from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form
+from .forms import QuestionBankForm, QuestionBankForm2, QuestionForm, CountryForm, QuestionBankRenameForm, QuestionModuleForm, SubQuestionForm, SingleCorrectForm, MCQForm, MultiCorrectForm, MatchtheColumnForm, MatchtheColumn2Form, Ques_Module_Name_Form
 
 from configparser import ConfigParser 
 # from . models import Question_Banks_Main, Questions_Main
@@ -295,7 +295,12 @@ def add_paper(request):
         form.fields["Question_List"].choices = q_tup
         form.fields["Question_Module_List"].choices = qm_tup
 
-        print(form)
+        # print(form)
+        for x in q_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
+
+        for x in qm_list:
+            x.statement = x.statement.split("\n")[0][0:40] + "..."
 
     return render(request, 'add_paper.html', {
         'form': form,
@@ -438,29 +443,34 @@ def upload_qbfile(request, name):
             qb.save()
 
             l=qsplit(qb.file)
-            global ques_form_list
-            ques_form_list = []
+            if(l==-13):
+                print('fff')
+                messages.add_message(request, messages.INFO, 'File Type must be ini')
+                return redirect('Home:upload_qbfile', name=name)
+            else:    
+                global ques_form_list
+                ques_form_list = []
 
-            for x in l:
-                ques_l = Questions_Main()
-                if 'statement' in x.keys():
-                    ques_l.statement = x['statement']
-                if 'answer' in x.keys():
-                    ques_l.answer = x['answer']
-                if 'marks' in x.keys():
-                    ques_l.marks = x['marks']
-                if 'difficulty' in x.keys():
-                    ques_l.difficulty = x['difficulty']
-                if 'tag' in x.keys():
-                    ques_l.tag = x['tag']
+                for x in l:
+                    ques_l = Questions_Main()
+                    if 'statement' in x.keys():
+                        ques_l.statement = x['statement']
+                    if 'answer' in x.keys():
+                        ques_l.answer = x['answer']
+                    if 'marks' in x.keys():
+                        ques_l.marks = x['marks']
+                    if 'difficulty' in x.keys():
+                        ques_l.difficulty = x['difficulty']
+                    if 'tag' in x.keys():
+                        ques_l.tag = x['tag']
 
-                # ques_l.username = request.user.username
-                # ques_l.qb_name = name
+                    # ques_l.username = request.user.username
+                    # ques_l.qb_name = name
 
-                form = QuestionForm(instance=ques_l)
-                ques_form_list.append(form)
+                    form = QuestionForm(instance=ques_l)
+                    ques_form_list.append(form)
 
-            return redirect('Home:add_ques_by_file',name = name)
+                return redirect('Home:add_ques_by_file',name = name)
 
     else:
         form = QuestionBankForm2()
@@ -558,7 +568,7 @@ def add_subques(request, id):
             ques.question_module_id = id
             ques.save()
 
-            print(ques.marks)
+            # print(ques.marks)
             ques_module.marks = ques_module.marks + ques.marks
             ques_module.ques_id_string = ques_module.ques_id_string + str(ques.id) + " "
             ques_module.save()
@@ -643,6 +653,33 @@ def edit_subques(request, id):
             'form': form
         })
 
+def edit_ques_module(request, id):
+    ques_module_instance = Question_Module.objects.get(id=id)
+
+    if request.method == 'POST':
+        form = Ques_Module_Name_Form(request.POST, instance=ques_module_instance)
+        if form.is_valid():
+            form.save()
+
+            papers = created_paper.objects.filter(username=request.user.username)
+            for p in papers:
+                p.marks = 0
+                l = p.ques_id.split()
+                l2 = p.ques_module_id.split()
+                for i in l:
+                    p.marks = p.marks + Questions_Main.objects.get(id=i).marks
+                for i in l2:
+                    p.marks = p.marks + Question_Module.objects.get(id=i).marks
+                p.save()
+
+            return redirect('Home:ques_module_detail', id=id)
+
+    else:
+        form = Ques_Module_Name_Form(instance=ques_module_instance)
+        return render(request, 'edit_question_module.html', {
+            'form': form
+        })
+
 
 # def rename_qb(request, name):
 #
@@ -670,18 +707,26 @@ def edit_subques(request, id):
 
 
 def qsplit(qfile):
+    try:
+        con=ConfigParser()
 
-    con=ConfigParser()
-    path = "media/" + qfile.name
-    con.read(path)
-    sl=con.sections()
-    ql=[]
-    for s in sl:
-        dic={}
-        for op in con.options(s):
-            dic[op]=con.get(s,op)
-        ql=ql+[dic]
-    return ql
+        path = "media/" + qfile.name
+        filename, file_extension = os.path.splitext(path)
+        print(file_extension)
+        if(file_extension=='.ini'):
+            con.read(path)
+            sl=con.sections()
+            ql=[]
+            for s in sl:
+                dic={}
+                for op in con.options(s):
+                    dic[op]=con.get(s,op)
+                ql=ql+[dic]
+            return ql
+        else:
+            return -13    
+    except:
+        return -13    
 
 def tex_pdf(id):
     paper_instance= created_paper.objects.get(id=id)
@@ -755,13 +800,15 @@ def tex_pdf(id):
                 fn.write("\\vspace*{"+str(1.5*ques.marks)+"cm}\n")
             elif(ques.qtype==2):
                 lst=ques.statement.split('\n')
-                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
-                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+ "\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}\\"+"\\ \n")
+                fn.write("\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"}")
                 fn.write("\\vspace*{2cm}\n")
             elif(ques.qtype==3):
                 lst=ques.statement.split('\n')
-                fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+lst[0]+"\\"+"\\ "+"\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"} \n")
-                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}")
+                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+ "\n")
+                fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}\\"+"\\ \n")
+                fn.write("\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"}")
                 fn.write("\\vspace*{3.5cm}\n")
                 # fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+ ques.statement+"} \n")
             elif(ques.qtype==4):

@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.25)  25 NOV 2019 02:37
+=======
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.9.17)  25 NOV 2019 02:39
+>>>>>>> 0f9128023c54376878d40f3847ef45ef71048ef2
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -529,7 +533,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 45--55
  []
 
 
+<<<<<<< HEAD
 Underfull \hbox (badness 10000) in paragraph at lines 55--57
+=======
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 60--63
+>>>>>>> 0f9128023c54376878d40f3847ef45ef71048ef2
 
  []
 
@@ -549,7 +558,19 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
  We now make it that large for the rest of the document.
  This may cause the page layout to be inconsistent, however.
 
+<<<<<<< HEAD
 [2{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+=======
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 63--66
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 66--76
+
+ []
+>>>>>>> 0f9128023c54376878d40f3847ef45ef71048ef2
 
 ]
 
@@ -567,17 +588,33 @@ Package Fancyhdr Warning: \headheight is too small (12.0pt):
 
 [4] [5] (media/quiz.aux) ) 
 Here is how much of TeX's memory you used:
+<<<<<<< HEAD
  10388 strings out of 494923
  196521 string characters out of 6180742
  248363 words of memory out of 5000000
  13500 multiletter control sequences out of 15000+600000
  7647 words of font info for 28 fonts, out of 8000000 for 9000
+=======
+ 10392 strings out of 494923
+ 196586 string characters out of 6180742
+ 249363 words of memory out of 5000000
+ 13504 multiletter control sequences out of 15000+600000
+ 8713 words of font info for 32 fonts, out of 8000000 for 9000
+>>>>>>> 0f9128023c54376878d40f3847ef45ef71048ef2
  14 hyphenation exceptions out of 8191
  48i,12n,45p,411b,375s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/ams
+<<<<<<< HEAD
 fonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
 m/cmr17.pfb>
 Output written on media/quiz.pdf (4 pages, 31827 bytes).
+=======
+fonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr1
+2.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on media/quiz.pdf (6 pages, 58977 bytes).
+>>>>>>> 0f9128023c54376878d40f3847ef45ef71048ef2
 PDF statistics:
  28 PDF objects out of 1000 (max. 8388607)
  19 compressed objects within 1 object stream

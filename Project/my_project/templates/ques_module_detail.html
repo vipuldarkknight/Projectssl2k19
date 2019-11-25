@@ -18,6 +18,11 @@
 <h3><em>Total Marks: {{ ques_module.marks }}</em></h3>
 <br>
 
+<span>
+     <button><a href="{% url 'Home:edit_ques_module' id=ques_module.id %}">Edit Question Module</a></button>
+ </span>
+
+
 <form method="GET">
 <div style="text-align:center">
     <button class="buttonbase button3" type="submit"><em>Search</em></button>

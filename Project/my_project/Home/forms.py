@@ -145,3 +145,8 @@ class SubQuestionForm(forms.ModelForm):
         model = SubQuestions
         fields = ('statement', 'answer', 'marks', 'difficulty', 'tag')
         # exclude = ['username', 'file']
+
+class Ques_Module_Name_Form(forms.ModelForm):
+    class Meta:
+        model = Question_Module
+        fields = ('statement',)
