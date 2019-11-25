@@ -508,7 +508,9 @@ def add_ques_by_file(request, name):
 
 @login_required
 def delete_qb(request, name):
-    Question_Banks_Main.objects.filter(username=request.user.username,name=name).get().delete()
+    ll = Question_Banks_Main.objects.filter(username=request.user.username,name=name)
+    for l in ll:
+        l.delete()
     return redirect('Home:qbList')
 
 @login_required
@@ -802,13 +804,14 @@ def tex_pdf(id):
                 lst=ques.statement.split('\n')
                 fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+ "\n")
                 fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}\\"+"\\ \n")
-                fn.write("\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"}")
+                fn.write("\\"+"\\ "+lst[2]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"\\"+"\\ "+lst[5]+"}")
                 fn.write("\\vspace*{2cm}\n")
             elif(ques.qtype==3):
                 lst=ques.statement.split('\n')
-                fn.write("\\item "+"{\\large (Single Correct) \\"+"\\ "+lst[0]+ "\n")
+                fn.write("\\item "+"{\\large (Multi Correct) \\"+"\\ "+lst[0]+ "\n")
                 fn.write("\\hspace*{\\fill} {\\large ["+str(ques.marks)+" marks]}\\"+"\\ \n")
-                fn.write("\\"+"\\ "+lst[1]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"}")
+                fn.write("\\"+"\\ "+lst[2]+"\\"+"\\ "+lst[3]+"\\"+"\\ "+lst[4]+"\\"+"\\ "+lst[5]+"}")
+                # print(lst[4])
                 fn.write("\\vspace*{3.5cm}\n")
                 # fn.write("\\item "+"{\\large (Multiple Correct) \\"+"\\ "+ ques.statement+"} \n")
             elif(ques.qtype==4):
@@ -819,7 +822,7 @@ def tex_pdf(id):
                 fn.write("\\begin{tabular}{|c|c|}\n")
                 fn.write("\\hline ")
                 for i in range(1,5):
-                    fn.write(lst[i]+"&"+lst[i+4]+" \\"+"\\ \n")
+                    fn.write(lst[i]+" & "+lst[i+4]+" \\"+"\\ \n")
                     fn.write("\\hline ")
                 fn.write("\\end{tabular} }\n")
                 fn.write("\\vspace*{2cm}\n")     
